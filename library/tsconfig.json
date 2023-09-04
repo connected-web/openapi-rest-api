@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declarationDir": "./dist",
+    "outDir": "./dist",
+    "typeRoots": ["node_modules/@types"],
+    "types": ["jest", "mocha", "node"],
+    "resolveJsonModule": true
+  },
+  "include": ["**/*.ts", "../test-api/src/ApiStack.ts", "../test-api/src/Resources.ts"],
+  "exclude": ["node_modules", "cdk.out"]
+}

@@ -1,0 +1,12 @@
+node_modules
+*.log
+
+.ftppass
+composer.phar
+vendor
+
+tests/integration/schema-errors/*
+secure-credentials.json
+
+.github.env
+coverage

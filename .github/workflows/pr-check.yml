@@ -1,0 +1,26 @@
+name: Check PR
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-cdk-api:
+    name: Test CDK API
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Use Node JS LTS
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20.x
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Install npm dependencies
+      run: npm run test
