@@ -5,7 +5,7 @@ import {
 
 import { Construct } from 'constructs'
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
-import { MethodResponse, IModel } from 'aws-cdk-lib/aws-apigateway'
+import { MethodResponse } from 'aws-cdk-lib/aws-apigateway'
 
 import { OpenAPIRouteMetadata, OpenAPIHelpers, OpenAPIEnums } from '@connected-web/openapi-rest-api'
 import { ExampleResources } from '../Resources'
@@ -58,13 +58,5 @@ export class StatusEndpoint extends OpenAPIRouteMetadata<ExampleResources> {
         'application/json': ApiResponse.model
       }
     }]
-  }
-
-  get methodRequestModels (): { [param: string]: IModel } | undefined {
-    return undefined
-  }
-
-  get requestParameters (): { [param: string]: boolean } | undefined {
-    return undefined
   }
 }

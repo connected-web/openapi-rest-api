@@ -3,7 +3,7 @@ import * as cdk from 'aws-cdk-lib'
 import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
 
 import { ExampleResources } from './Resources'
-import { StatusEndpoint } from './endpoints/StatusEndpoint'
+import { StatusEndpoint } from './endpoints/Status'
 import { Construct } from 'constructs'
 
 export interface IdentityConfig {

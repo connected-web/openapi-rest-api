@@ -5,7 +5,8 @@
     "test": "ts-standard && npm run test:unit && npm run test:library",
     "test:unit": "jest src/tests/unit/**.test.ts",
     "test:library": "jest src/tests/library/**.test.ts",
-    "lint": "ts-standard --fix"
+    "lint": "ts-standard",
+    "lint:fix": "ts-standard --fix"
   },
   "author": "Connected Web",
   "license": "ISC",

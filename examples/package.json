@@ -4,14 +4,15 @@
   "scripts": {
     "test": "ts-standard && npm run test:example",
     "test:example": "jest src/tests/**.test.ts",
-    "lint": "ts-standard --fix"
+    "lint": "ts-standard",
+    "lint:fix": "ts-standard --fix"
   },
   "author": "Connected Web",
   "license": "ISC",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.108",
     "@types/jest": "^29.5.3",
-    "@types/node": "^18.15.11",
+    "@types/node": "^18.17.14",
     "@types/prettier": "2.6.0",
     "aws-cdk": "2.80.0",
     "esbuild": "^0.15.13",
