@@ -22,7 +22,7 @@ jobs:
     - name: Install npm dependencies
       run: npm ci
 
-    - name: Install npm dependencies
+    - name: Run tests
       run: npm run test
       working-directory: ./library
       env:
@@ -44,7 +44,7 @@ jobs:
     - name: Install npm dependencies
       run: npm ci
 
-    - name: Install npm dependencies
+    - name: Run tests
       run: npm run test
       working-directory: ./examples
       env:
