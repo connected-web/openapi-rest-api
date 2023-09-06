@@ -11,7 +11,8 @@
   "author": "Connected Web",
   "license": "ISC",
   "workspaces": [
-    "library"
+    "library",
+    "examples"
   ],
   "devDependencies": {
     "lerna": "^7.1.4"

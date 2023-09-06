@@ -70,7 +70,9 @@ export abstract class OpenAPIRouteMetadata<R> {
    *
    * The lambda config can be an empty if you want to trust the defaults.
    */
-  abstract get lambdaConfig (): NodejsFunctionProps
+  get lambdaConfig (): NodejsFunctionProps {
+    return {}
+  }
 
   /**
    * The requestParameters are used to configure the API Gateway method request parameters which will show up in the generated OpenAPI spec.
@@ -90,7 +92,9 @@ export abstract class OpenAPIRouteMetadata<R> {
    * - dateCode which is required
    * - paginate which is optional
    */
-  abstract get requestParameters (): { [parameterName: string]: boolean } | undefined
+  protected get requestParameters (): { [parameterName: string]: boolean } | undefined {
+    return undefined
+  }
 
   /**
    * The methodRequestModels are used to configure the API Gateway method request models which will show up in the generated OpenAPI spec.
@@ -102,7 +106,9 @@ export abstract class OpenAPIRouteMetadata<R> {
    *  'application/json': StoredProfile.model
    * }
    */
-  abstract get methodRequestModels (): { [contentType: string]: IModel } | undefined
+  protected get methodRequestModels (): { [contentType: string]: IModel } | undefined {
+    return undefined
+  }
 
   /**
    * The methodResponses are used to configure the API Gateway method responses which will show up in the generated OpenAPI spec.

@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  test-cdk-api:
+  test-library:
     name: Library Tests
     runs-on: ubuntu-latest
 
