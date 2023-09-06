@@ -1,6 +1,6 @@
 {
   "Resources": {
-    "HarnessAPIPrivateApiRequestAuthorizerD5AB667B": {
+    "ExampleAPIPrivateApiRequestAuthorizerDB7A3947": {
       "Type": "AWS::ApiGateway::Authorizer",
       "Properties": {
         "AuthorizerUri": {
@@ -53,21 +53,21 @@
           ]
         },
         "IdentitySource": "method.request.header.Authorization",
-        "Name": "MyTestStackHarnessAPIPrivateApiRequestAuthorizer48A91ABF",
+        "Name": "MyTestStackExampleAPIPrivateApiRequestAuthorizerEBBBC25A",
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         },
         "Type": "REQUEST"
       }
     },
-    "HarnessAPIFE0E1CB0": {
+    "ExampleAPI61CA833D": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Description": "Harness API - https://github.com/connected-web/openapi-rest-api",
-        "Name": "Harness API"
+        "Description": "Example API - https://github.com/connected-web/openapi-rest-api",
+        "Name": "Example API"
       }
     },
-    "HarnessAPICloudWatchRoleAB468EE6": {
+    "ExampleAPICloudWatchRoleE0B02D49": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -100,54 +100,54 @@
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain"
     },
-    "HarnessAPIAccount61F2DFEB": {
+    "ExampleAPIAccountFA5A9EBD": {
       "Type": "AWS::ApiGateway::Account",
       "Properties": {
         "CloudWatchRoleArn": {
           "Fn::GetAtt": [
-            "HarnessAPICloudWatchRoleAB468EE6",
+            "ExampleAPICloudWatchRoleE0B02D49",
             "Arn"
           ]
         }
       },
       "DependsOn": [
-        "HarnessAPIFE0E1CB0"
+        "ExampleAPI61CA833D"
       ],
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain"
     },
-    "HarnessAPIDeploymentCB1DE8BDe2717814eef1e8f95264f300a4912eb0": {
+    "ExampleAPIDeployment7211F28Ded8ef74cf942010ebffeb40cf4de6b24": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
-        "Description": "Harness API - https://github.com/connected-web/openapi-rest-api",
+        "Description": "Example API - https://github.com/connected-web/openapi-rest-api",
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         }
       },
       "DependsOn": [
-        "BasicObjectModel211727F7",
-        "HarnessAPIOPTIONSCEBBDB88",
-        "HarnessAPIstatusGET452BE2B5",
-        "HarnessAPIstatusOPTIONS1A78CFCD",
-        "HarnessAPIstatusCCD9C0CA"
+        "ApiResponseModel7ED3C248",
+        "ExampleAPIOPTIONS3CB2EF6E",
+        "ExampleAPIstatusGETB4B924D6",
+        "ExampleAPIstatusOPTIONSEC7DF4E1",
+        "ExampleAPIstatus12420EBC"
       ]
     },
-    "HarnessAPIDeploymentStagev147A49639": {
+    "ExampleAPIDeploymentStagev1550204A9": {
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
         "DeploymentId": {
-          "Ref": "HarnessAPIDeploymentCB1DE8BDe2717814eef1e8f95264f300a4912eb0"
+          "Ref": "ExampleAPIDeployment7211F28Ded8ef74cf942010ebffeb40cf4de6b24"
         },
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         },
         "StageName": "v1"
       },
       "DependsOn": [
-        "HarnessAPIAccount61F2DFEB"
+        "ExampleAPIAccountFA5A9EBD"
       ]
     },
-    "HarnessAPIOPTIONSCEBBDB88": {
+    "ExampleAPIOPTIONS3CB2EF6E": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "ApiKeyRequired": false,
@@ -183,31 +183,31 @@
         ],
         "ResourceId": {
           "Fn::GetAtt": [
-            "HarnessAPIFE0E1CB0",
+            "ExampleAPI61CA833D",
             "RootResourceId"
           ]
         },
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         }
       }
     },
-    "HarnessAPIstatusCCD9C0CA": {
+    "ExampleAPIstatus12420EBC": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
           "Fn::GetAtt": [
-            "HarnessAPIFE0E1CB0",
+            "ExampleAPI61CA833D",
             "RootResourceId"
           ]
         },
         "PathPart": "status",
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         }
       }
     },
-    "HarnessAPIstatusOPTIONS1A78CFCD": {
+    "ExampleAPIstatusOPTIONSEC7DF4E1": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "ApiKeyRequired": false,
@@ -242,20 +242,20 @@
           }
         ],
         "ResourceId": {
-          "Ref": "HarnessAPIstatusCCD9C0CA"
+          "Ref": "ExampleAPIstatus12420EBC"
         },
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         }
       }
     },
-    "HarnessAPIstatusGETApiPermissionMyTestStackHarnessAPIBD53B374GETstatus1DE4B9F5": {
+    "ExampleAPIstatusGETApiPermissionMyTestStackExampleAPI8A72BB8EGETstatusAD84744A": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
           "Fn::GetAtt": [
-            "HarnessAPIGetStatus3D94D0B2",
+            "ExampleAPIGetStatusDD96DC0A",
             "Arn"
           ]
         },
@@ -270,11 +270,11 @@
               },
               ":execute-api:eu-west-2:1234567890:",
               {
-                "Ref": "HarnessAPIFE0E1CB0"
+                "Ref": "ExampleAPI61CA833D"
               },
               "/",
               {
-                "Ref": "HarnessAPIDeploymentStagev147A49639"
+                "Ref": "ExampleAPIDeploymentStagev1550204A9"
               },
               "/GET/status"
             ]
@@ -282,13 +282,13 @@
         }
       }
     },
-    "HarnessAPIstatusGETApiPermissionTestMyTestStackHarnessAPIBD53B374GETstatus2D29F0E7": {
+    "ExampleAPIstatusGETApiPermissionTestMyTestStackExampleAPI8A72BB8EGETstatusEB7D6944": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
           "Fn::GetAtt": [
-            "HarnessAPIGetStatus3D94D0B2",
+            "ExampleAPIGetStatusDD96DC0A",
             "Arn"
           ]
         },
@@ -303,7 +303,7 @@
               },
               ":execute-api:eu-west-2:1234567890:",
               {
-                "Ref": "HarnessAPIFE0E1CB0"
+                "Ref": "ExampleAPI61CA833D"
               },
               "/test-invoke-stage/GET/status"
             ]
@@ -311,18 +311,18 @@
         }
       }
     },
-    "HarnessAPIstatusGET452BE2B5": {
+    "ExampleAPIstatusGETB4B924D6": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "AuthorizationType": "CUSTOM",
         "AuthorizerId": {
-          "Ref": "HarnessAPIPrivateApiRequestAuthorizerD5AB667B"
+          "Ref": "ExampleAPIPrivateApiRequestAuthorizerDB7A3947"
         },
         "HttpMethod": "GET",
         "Integration": {
           "Credentials": {
             "Fn::GetAtt": [
-              "HarnessAPIApiExecutionRoleA38996E4",
+              "ExampleAPIApiExecutionRoleF249491B",
               "Arn"
             ]
           },
@@ -339,7 +339,7 @@
                 ":apigateway:eu-west-2:lambda:path/2015-03-31/functions/",
                 {
                   "Fn::GetAtt": [
-                    "HarnessAPIGetStatus3D94D0B2",
+                    "ExampleAPIGetStatusDD96DC0A",
                     "Arn"
                   ]
                 },
@@ -352,7 +352,7 @@
           {
             "ResponseModels": {
               "application/json": {
-                "Ref": "BasicObjectModel211727F7"
+                "Ref": "ApiResponseModel7ED3C248"
               }
             },
             "ResponseParameters": {
@@ -365,14 +365,14 @@
         ],
         "OperationName": "getStatus",
         "ResourceId": {
-          "Ref": "HarnessAPIstatusCCD9C0CA"
+          "Ref": "ExampleAPIstatus12420EBC"
         },
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         }
       }
     },
-    "HarnessAPIApiExecutionRoleA38996E4": {
+    "ExampleAPIApiExecutionRoleF249491B": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -389,7 +389,7 @@
         }
       }
     },
-    "HarnessAPIApiExecutionRoleDefaultPolicyF5C1071A": {
+    "ExampleAPIApiExecutionRoleDefaultPolicy2CE674BB": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyDocument": {
@@ -399,7 +399,7 @@
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "HarnessAPIGetStatus3D94D0B2",
+                  "ExampleAPIGetStatusDD96DC0A",
                   "Arn"
                 ]
               }
@@ -407,15 +407,15 @@
           ],
           "Version": "2012-10-17"
         },
-        "PolicyName": "HarnessAPIApiExecutionRoleDefaultPolicyF5C1071A",
+        "PolicyName": "ExampleAPIApiExecutionRoleDefaultPolicy2CE674BB",
         "Roles": [
           {
-            "Ref": "HarnessAPIApiExecutionRoleA38996E4"
+            "Ref": "ExampleAPIApiExecutionRoleF249491B"
           }
         ]
       }
     },
-    "HarnessAPIGetStatusServiceRoleD0D4437D": {
+    "ExampleAPIGetStatusServiceRole709FD67A": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -446,7 +446,7 @@
         ]
       }
     },
-    "HarnessAPIGetStatusServiceRoleDefaultPolicyDCACFB79": {
+    "ExampleAPIGetStatusServiceRoleDefaultPolicy57183322": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyDocument": {
@@ -461,7 +461,7 @@
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "ServiceDataBucketF7784159",
+                    "ExampleServiceBucketFDFBB652",
                     "Arn"
                   ]
                 },
@@ -471,7 +471,7 @@
                     [
                       {
                         "Fn::GetAtt": [
-                          "ServiceDataBucketF7784159",
+                          "ExampleServiceBucketFDFBB652",
                           "Arn"
                         ]
                       },
@@ -484,24 +484,24 @@
           ],
           "Version": "2012-10-17"
         },
-        "PolicyName": "HarnessAPIGetStatusServiceRoleDefaultPolicyDCACFB79",
+        "PolicyName": "ExampleAPIGetStatusServiceRoleDefaultPolicy57183322",
         "Roles": [
           {
-            "Ref": "HarnessAPIGetStatusServiceRoleD0D4437D"
+            "Ref": "ExampleAPIGetStatusServiceRole709FD67A"
           }
         ]
       }
     },
-    "HarnessAPIGetStatus3D94D0B2": {
+    "ExampleAPIGetStatusDD96DC0A": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "30f331b51fc202cae75b5e7737d977c56bb196dbdb79b19d8a5390193cf7f2db.zip"
+          "S3Key": "011a09e6114345c2c02a791fac8e9d486400d0fe00dd8b92bded102d49731ef5.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-06T20:15:58.474Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-06T20:26:10.474Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
@@ -509,7 +509,7 @@
         "MemorySize": 256,
         "Role": {
           "Fn::GetAtt": [
-            "HarnessAPIGetStatusServiceRoleD0D4437D",
+            "ExampleAPIGetStatusServiceRole709FD67A",
             "Arn"
           ]
         },
@@ -517,8 +517,8 @@
         "Timeout": 25
       },
       "DependsOn": [
-        "HarnessAPIGetStatusServiceRoleDefaultPolicyDCACFB79",
-        "HarnessAPIGetStatusServiceRoleD0D4437D"
+        "ExampleAPIGetStatusServiceRoleDefaultPolicy57183322",
+        "ExampleAPIGetStatusServiceRole709FD67A"
       ]
     },
     "PrivateAPIAuthorizerServiceRoleEBFD5560": {
@@ -580,7 +580,7 @@
         "PrivateAPIAuthorizerServiceRoleEBFD5560"
       ]
     },
-    "PrivateAPIAuthorizerMyTestStackHarnessAPIPrivateApiRequestAuthorizer48A91ABFPermissions58761041": {
+    "PrivateAPIAuthorizerMyTestStackExampleAPIPrivateApiRequestAuthorizerEBBBC25APermissionsB6AD73EF": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:InvokeFunction",
@@ -601,18 +601,18 @@
               },
               ":execute-api:eu-west-2:1234567890:",
               {
-                "Ref": "HarnessAPIFE0E1CB0"
+                "Ref": "ExampleAPI61CA833D"
               },
               "/authorizers/",
               {
-                "Ref": "HarnessAPIPrivateApiRequestAuthorizerD5AB667B"
+                "Ref": "ExampleAPIPrivateApiRequestAuthorizerDB7A3947"
               }
             ]
           ]
         }
       }
     },
-    "ServiceDataBucketF7784159": {
+    "ExampleServiceBucketFDFBB652": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": "test-api-service-data-bucket",
@@ -623,34 +623,50 @@
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete"
     },
-    "BasicObjectModel211727F7": {
+    "ApiResponseModel7ED3C248": {
       "Type": "AWS::ApiGateway::Model",
       "Properties": {
         "ContentType": "application/json",
-        "Name": "BasicObjectModel",
+        "Name": "ApiResponseModel",
         "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
+          "Ref": "ExampleAPI61CA833D"
         },
         "Schema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
-          "title": "Basic Object",
-          "description": "A basic JSON object with key value pairs",
+          "title": "Basic API Response",
           "type": "object",
-          "properties": {},
-          "additionalProperties": true
+          "properties": {
+            "statusCode": {
+              "type": "integer",
+              "description": "The HTTP status code of the response"
+            },
+            "type": {
+              "type": "string",
+              "description": "The type of the response: success, error, or warning"
+            },
+            "message": {
+              "type": "string",
+              "description": "The message content describing the response"
+            }
+          },
+          "required": [
+            "statusCode",
+            "type",
+            "message"
+          ]
         }
       }
     }
   },
   "Outputs": {
-    "HarnessAPIEndpoint3877EEC0": {
+    "ExampleAPIEndpoint5B45852B": {
       "Value": {
         "Fn::Join": [
           "",
           [
             "https://",
             {
-              "Ref": "HarnessAPIFE0E1CB0"
+              "Ref": "ExampleAPI61CA833D"
             },
             ".execute-api.eu-west-2.",
             {
@@ -658,7 +674,7 @@
             },
             "/",
             {
-              "Ref": "HarnessAPIDeploymentStagev147A49639"
+              "Ref": "ExampleAPIDeploymentStagev1550204A9"
             },
             "/"
           ]

@@ -92,7 +92,7 @@ export abstract class OpenAPIRouteMetadata<R> {
    * - dateCode which is required
    * - paginate which is optional
    */
-  protected get requestParameters (): { [parameterName: string]: boolean } | undefined {
+  public get requestParameters (): { [parameterName: string]: boolean } | undefined {
     return undefined
   }
 
@@ -106,7 +106,7 @@ export abstract class OpenAPIRouteMetadata<R> {
    *  'application/json': StoredProfile.model
    * }
    */
-  protected get methodRequestModels (): { [contentType: string]: IModel } | undefined {
+  public get methodRequestModels (): { [contentType: string]: IModel } | undefined {
     return undefined
   }
 

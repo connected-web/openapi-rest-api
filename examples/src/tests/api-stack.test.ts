@@ -2,7 +2,7 @@ import { describe, it, beforeAll } from '@jest/globals'
 
 import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
-import { ExampleAPIStack } from './ExampleAPI'
+import { ExampleAPIStack } from '../ExampleAPI'
 
 import fs from 'node:fs'
 
@@ -35,8 +35,8 @@ describe('REST API using Harness as Test Bed', () => {
 
   it('Creates an AWS ApiGateway RestApi with the correct title and description', () => {
     template.hasResourceProperties('AWS::ApiGateway::RestApi', {
-      Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
-      Name: 'Harness API'
+      Description: 'Example API - https://github.com/connected-web/openapi-rest-api',
+      Name: 'Example API'
     })
   })
 

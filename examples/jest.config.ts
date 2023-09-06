@@ -6,5 +6,8 @@ export default {
   preset: 'ts-jest',
   transform: {
     '^.+\\.(ts|tsx)?$': 'ts-jest'
+  },
+  moduleNameMapper: {
+    '^@connected-web/openapi-rest-api$': '<rootDir>../library/src/PackageIndex.ts'
   }
 }

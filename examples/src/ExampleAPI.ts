@@ -1,10 +1,10 @@
 import * as cdk from 'aws-cdk-lib'
 
-import { Construct } from 'constructs'
 import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
 
-import { HarnessResources } from './Resources'
-import { HarnessEndpoint } from './endpoints/HarnessEndpoint'
+import { ExampleResources } from './Resources'
+import { StatusEndpoint } from './endpoints/StatusEndpoint'
+import { Construct } from 'constructs'
 
 export interface IdentityConfig {
   verifiers: OpenAPIVerifiers
@@ -17,10 +17,10 @@ export class ExampleAPIStack extends cdk.Stack {
     super(scope, id, props)
 
     // Create shared resources
-    const sharedResources = new HarnessResources(scope, this)
+    const sharedResources = new ExampleResources(scope, this)
 
     // Create API Gateway
-    const apiGateway = new OpenAPIRestAPI<HarnessResources>(this, 'Example API', {
+    const apiGateway = new OpenAPIRestAPI<ExampleResources>(this, 'Example API', {
       Description: 'Example API - https://github.com/connected-web/openapi-rest-api',
       SubDomain: 'example-api',
       HostedZoneDomain: config.hostedZoneDomain,
@@ -33,7 +33,7 @@ export class ExampleAPIStack extends cdk.Stack {
     // Add endpoints to API
     apiGateway
       .addEndpoints([
-        new HarnessEndpoint()
+        new StatusEndpoint()
       ])
       .report()
   }
