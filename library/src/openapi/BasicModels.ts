@@ -8,13 +8,22 @@ import { OpenAPIModelFactory } from './ModelFactory'
  * It's advised that you extend this and implement your own models to reflect your API.
  */
 export default class OpenAPIBasicModels {
+  private static _singleton: OpenAPIBasicModels
   public static modelFactory: OpenAPIModelFactory
 
-  static setup (scope: Construct, restApi: IRestApi) {
+  static setup (scope: Construct, restApi: IRestApi): OpenAPIBasicModels {
     OpenAPIBasicModels.modelFactory = new OpenAPIModelFactory(scope, restApi)
+    return OpenAPIBasicModels.singleton
   }
 
-  static get BasicObjectModel (): Model {
+  static get singleton (): OpenAPIBasicModels {
+    if (OpenAPIBasicModels._singleton === undefined) {
+      OpenAPIBasicModels._singleton = new OpenAPIBasicModels()
+    }
+    return OpenAPIBasicModels._singleton
+  }
+
+  get BasicObjectModel (): Model {
     return OpenAPIBasicModels.modelFactory.create('BasicObject', {
       schema: JsonSchemaVersion.DRAFT7,
       title: 'Basic Object',
@@ -25,7 +34,7 @@ export default class OpenAPIBasicModels {
     })
   }
 
-  static get BasicArrayModel (): Model {
+  get BasicArrayModel (): Model {
     return OpenAPIBasicModels.modelFactory.create('BasicArray', {
       schema: JsonSchemaVersion.DRAFT7,
       title: 'Basic Array of Objects',
@@ -38,7 +47,7 @@ export default class OpenAPIBasicModels {
     })
   }
 
-  static get BasicStringArrayModel (): Model {
+  get BasicStringArrayModel (): Model {
     return OpenAPIBasicModels.modelFactory.create('BasicStringArray', {
       schema: JsonSchemaVersion.DRAFT7,
       title: 'Basic Array of Strings',

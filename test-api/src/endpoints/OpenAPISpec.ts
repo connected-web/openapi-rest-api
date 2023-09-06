@@ -2,15 +2,17 @@ import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult
 } from 'aws-lambda/trigger/api-gateway-proxy'
-import { httpStatusCodes, lambdaResponse } from '../openapi/Response'
 import { Construct } from 'constructs'
 import { APIGatewayClient, GetExportCommand } from '@aws-sdk/client-api-gateway'
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { MethodResponse, IModel } from 'aws-cdk-lib/aws-apigateway'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
-import { Resources } from '../../../test-api/src/Resources'
-import { OpenAPIRouteMetadata } from '../openapi/Routes'
-import BasicModels from '../openapi/BasicModels'
+
+import { httpStatusCodes, lambdaResponse } from '../../../library/src/openapi/Response'
+import { OpenAPIRouteMetadata } from '../../../library/src/openapi/Routes'
+import BasicModels from '../../../library/src//openapi/BasicModels'
+
+import { Resources } from '../Resources'
 
 /* This handler is executed by AWS Lambda when the endpoint is invoked */
 export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
@@ -58,6 +60,10 @@ export class OpenAPISpecEndpoint extends OpenAPIRouteMetadata<Resources> {
     return 'GET /openapi'
   }
 
+  get routeEntryPoint(): string {
+    return __filename
+  }
+
   get lambdaConfig(): NodejsFunctionProps {
     return {}
   }
@@ -71,7 +77,7 @@ export class OpenAPISpecEndpoint extends OpenAPIRouteMetadata<Resources> {
         'method.response.header.Access-Control-Allow-Credentials': true
       },
       responseModels: {
-        'application/json': BasicModels.BasicObjectModel
+        'application/json': BasicModels.singleton.BasicObjectModel
       }
     }]
   }

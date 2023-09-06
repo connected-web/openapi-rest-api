@@ -2,12 +2,14 @@ import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult
 } from 'aws-lambda/trigger/api-gateway-proxy'
-import { httpStatusCodes, lambdaResponse } from '../../../library/src/openapi/Response'
 
 import { Construct } from 'constructs'
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { MethodResponse, IModel } from 'aws-cdk-lib/aws-apigateway'
-import { Resources } from '../../../test-api/src/Resources'
+
+import { Resources } from '../Resources'
+
+import { httpStatusCodes, lambdaResponse } from '../../../library/src/openapi/Response'
 import { OpenAPIRouteMetadata } from '../../../library/src/openapi/Routes'
 import StatusResponse from '../models/StatusResponse'
 
@@ -31,6 +33,10 @@ export class StatusEndpoint extends OpenAPIRouteMetadata<Resources> {
 
   get restSignature(): string {
     return 'GET /status'
+  }
+
+  get routeEntryPoint(): string {
+    return __filename
   }
 
   get lambdaConfig(): NodejsFunctionProps {

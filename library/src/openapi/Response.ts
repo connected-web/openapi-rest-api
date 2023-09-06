@@ -66,5 +66,5 @@ export const httpStatusCodes = {
   insufficientStorage: 507,
   loopDetected: 508,
   notExtended: 510,
-  networkAuthenticationRequired: 511,
+  networkAuthenticationRequired: 511
 }
