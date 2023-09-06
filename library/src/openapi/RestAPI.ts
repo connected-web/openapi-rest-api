@@ -311,7 +311,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
           '',
           `${String(this.description ?? 'No description provided')}`,
           '',
-          `Registered URL: https://${String(this.vanityDomain) ?? 'no-vanity-url-registered'}`,
+          `Registered URL: https://${this.vanityDomain ?? 'no-vanity-url-registered'}`,
           '',
           '## Endpoints',
           '',
