@@ -2,13 +2,13 @@ import { describe, it, beforeAll } from '@jest/globals'
 
 import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
-import { ApiStack } from '../../../../test-api/src/ApiStack'
+import { HarnessAPIStack } from './harness/HarnessAPI'
 
 import fs from 'node:fs'
 
 const getTemplate = (): Template => {
   const app = new cdk.App()
-  const stack = new ApiStack(app, 'MyTestStack', {
+  const stack = new HarnessAPIStack(app, 'MyTestStack', {
     env: {
       account: '1234567890',
       region: 'eu-west-2'
@@ -26,7 +26,7 @@ const getTemplate = (): Template => {
   return template
 }
 
-describe('REST API', () => {
+describe('REST API using Harness as Test Bed', () => {
   let template: Template
 
   beforeAll(() => {
@@ -35,20 +35,14 @@ describe('REST API', () => {
 
   it('Creates an AWS ApiGateway RestApi with the correct title and description', () => {
     template.hasResourceProperties('AWS::ApiGateway::RestApi', {
-      Description: 'Schema API DB - https://github.com/connected-web/template-api',
-      Name: 'Schema API DB'
+      Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
+      Name: 'Harness API'
     })
   })
 
   it('Creates a AWS ApiGateway Method with the operationId - getStatus', () => {
     template.hasResourceProperties('AWS::ApiGateway::Method', {
       OperationName: 'getStatus'
-    })
-  })
-
-  it('Creates a AWS ApiGateway Method with the operationId - getOpenAPISpec', () => {
-    template.hasResourceProperties('AWS::ApiGateway::Method', {
-      OperationName: 'getOpenAPISpec'
     })
   })
 })

@@ -2,9 +2,9 @@
   "name": "openapi-rest-api",
   "version": "0.1.0",
   "scripts": {
-    "test": "ts-standard && npm run test:unit && npm run test:pre-deployment",
+    "test": "ts-standard && npm run test:unit && npm run test:library",
     "test:unit": "jest src/tests/unit/**.test.ts",
-    "test:pre-deployment": "jest src/tests/pre-deployment/**.test.ts",
+    "test:library": "jest src/tests/library/**.test.ts",
     "lint": "ts-standard --fix"
   },
   "author": "Connected Web",

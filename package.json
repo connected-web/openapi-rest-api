@@ -1,19 +1,17 @@
 {
-  "name": "template-api",
-  "version": "1.0.0",
-  "description": "Template API for Connected Web",
-  "main": "example-api/src/ApiStack.ts",
+  "name": "@connected-web/openapi-rest-api",
+  "version": "0.1.0",
+  "description": "A AWS-CDK library to create a self-documenting AWS API Gateway Rest API using OpenAPI 3.0.0 specification, and AWS Lambda endpoints.",
+  "main": "library/src/PackageIndex.ts",
   "scripts": {
     "lint": "lerna run lint",
-    "test": "lerna run test",
-    "test:post-deployment": "lerna run test:post-deployment",
-    "typegen:for-post-deployment": "lerna run typegen:for-post-deployment"
+    "test": "lerna run test"
   },
   "keywords": [],
   "author": "Connected Web",
   "license": "ISC",
   "workspaces": [
-    "example-api"
+    "library"
   ],
   "devDependencies": {
     "lerna": "^7.1.4"
