@@ -16,7 +16,7 @@ To an existing CDK project, add the following dependency:
 npm install @connected-web/openapi-rest-api
 ```
 
-### Example API
+## Example API
 
 The [examples](./examples) folder demonstrates the skeleton for a practical project.
 
@@ -27,7 +27,7 @@ There should be at least four parts to each OpenAPI REST API project:
 - 📊 Models     - extends `OpenAPIBasicModels` and contains the request and response data models for each endpoint
 - 🚀 Endpoints  - extends `OpenAPIEndpoint` and contains the business logic for each endpoint
 
-### 🌐 Example CDK Stack
+### 🌐 Example API Stack
 
 The CDK stack is used to create the API Gateway, and to create the endpoints. The CDK stack should extend `cdk.Stack` and implement `OpenAPIRestAPI<*>`. The `OpenAPIRestAPI<*>` interface requires the following parameters:
 
