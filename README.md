@@ -2,7 +2,275 @@
 
 A AWS-CDK library to create a self-documenting AWS API Gateway Rest API using OpenAPI 3.0.0 specification, and AWS Lambda endpoints.
 
-## Why
+## Project Goals
+
+- 🤔 Simplify API creation with AWS Lambda and API Gateway using OpenAPI 3.0.0. Enhance security with DNS records, SSL certificates, and Cognito User Pool.
+- 🛠️ AWS CDK deploys resources, combining custom logic and OpenAPI in TypeScript. Utilizes API Gateway, AWS Lambda, and an authorizer lambda for security.
+- 📦 Achieve a custom API on a hosted domain, easily deployable and recreatable with minimal ongoing costs.
+
+## Usage
+
+To an existing CDK project, add the following dependency:
+
+```sh
+npm install @connected-web/openapi-rest-api
+```
+
+### Example API
+
+The [examples](./examples) folder demonstrates the skeleton for a practical project.
+
+There should be at least four parts to each OpenAPI REST API project:
+
+- 🌐 API Stack  - extends `cdk.Stack` and implements `OpenAPIRestAPI<*>`
+- 📦 Resources* - extends `cdk.Construct` and contains shared resources to pass between endpoints
+- 📊 Models     - extends `OpenAPIBasicModels` and contains the request and response data models for each endpoint
+- 🚀 Endpoints  - extends `OpenAPIEndpoint` and contains the business logic for each endpoint
+
+### 🌐 Example CDK Stack
+
+The CDK stack is used to create the API Gateway, and to create the endpoints. The CDK stack should extend `cdk.Stack` and implement `OpenAPIRestAPI<*>`. The `OpenAPIRestAPI<*>` interface requires the following parameters:
+
+- `Description` - A description of the API
+- `SubDomain` - The subdomain that will be used to host the API
+- `HostedZoneDomain` - The domain that will be used to host the API
+- `Verifiers` - An array of verifiers that will be used to verify requests
+
+The `OpenAPIRestAPI<*>` interface also supports the following methods:
+
+- `addEndpoints` - Adds an array of endpoints to the API
+- `report` - Reports the API Gateway URL and the OpenAPI specification URL
+
+Example: [./ExampleAPI.ts](./examples/src/ExampleAPI.ts)
+
+```typescript
+import * as cdk from 'aws-cdk-lib'
+
+import { Construct } from 'constructs'
+import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
+
+import { ExampleResources } from './Resources'
+import { StatusEndpoint } from './endpoints/Status'
+import { ReceivePayloadEndpoint } from './endpoints/ReceivePayload'
+
+export interface IdentityConfig {
+  verifiers: OpenAPIVerifiers
+}
+
+export interface StackParameters { hostedZoneDomain: string, serviceDataBucketName: string, identity: IdentityConfig }
+
+export class ExampleAPIStack extends cdk.Stack {
+  constructor (scope: Construct, id: string, props: cdk.StackProps, config: StackParameters) {
+    super(scope, id, props)
+
+    // Create shared resources
+    const sharedResources = new ExampleResources(scope, this)
+
+    // Create API Gateway
+    const apiGateway = new OpenAPIRestAPI<ExampleResources>(this, 'Example API', {
+      Description: 'Example API - https://github.com/connected-web/openapi-rest-api',
+      SubDomain: 'example-api',
+      HostedZoneDomain: config.hostedZoneDomain,   // this hosted zone should already exist in the AWS account
+      Verifiers: config?.identity.verifiers ?? [], // provide a list of Cognito User Pool clients to verify against
+      // Optional alternative: AuthorizerLambdaArn: config?.identity.authorizerLambdaArn // supply a custom authorizer lambda via ARN
+    }, sharedResources)
+
+    // Kick of dependency injection for shared models and model factory
+    OpenAPIBasicModels.setup(this, apiGateway.restApi)
+
+    // Add endpoints to API
+    apiGateway
+      .addEndpoints([
+        new StatusEndpoint(),
+        new ReceivePayloadEndpoint()
+      ])
+      .report()
+  }
+}
+```
+
+### 📦 Example Resources
+
+The resources class is used to create shared resources that can be passed between endpoints. This is useful for resources that are used by multiple endpoints, such as a data bucket, or any other custom CDK resources supported by AWS.
+
+Example: [./Resources.ts](./examples/src/Resources.ts)
+
+```typescript
+import { Construct } from 'constructs'
+import * as cdk from 'aws-cdk-lib'
+import * as s3 from 'aws-cdk-lib/aws-s3'
+
+export class ExampleResources {
+  scope: Construct
+  stack: cdk.Stack
+
+  constructor (scope: Construct, stack: cdk.Stack) {
+    this.scope = scope
+    this.stack = stack
+  }
+
+  get serviceDataBucket (): s3.Bucket {
+    const serviceBucketName = process.env.SERVICE_BUCKET_NAME ?? 'test-api-service-data-bucket'
+    return new s3.Bucket(this.stack, 'ExampleServiceBucket', {
+      bucketName: serviceBucketName,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      versioned: true
+    })
+  }
+}
+```
+
+### 📊 Example Model
+
+The models are used to define the request and response data for each endpoint. These models are also used to create the OpenAPI specification, which can then be used to validate the request and response data, as well as generate documentation and client libraries.
+
+Example: [./models/ApiPayload.ts](./examples/src/models/ApiPayload.ts)
+
+```typescript
+import { IModel, JsonSchemaType, JsonSchemaVersion } from 'aws-cdk-lib/aws-apigateway'
+import { OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
+
+export class ApiPayload extends OpenAPIBasicModels {
+  static get model (): IModel {
+    return OpenAPIBasicModels.modelFactory?.create('ApiPayload', {
+      schema: JsonSchemaVersion.DRAFT7,
+      title: 'Basic API Payload',
+      type: JsonSchemaType.OBJECT,
+      properties: {
+        operationId: {
+          type: JsonSchemaType.INTEGER,
+          description: 'The HTTP status code of the response'
+        },
+        payload: {
+          type: JsonSchemaType.OBJECT,
+          description: 'The data payload of the request'
+        }
+      },
+      required: ['operationId', 'payload']
+    }) as IModel
+  }
+}
+
+export interface ApiPayloadType {
+  operationId: number
+  payload: any
+}
+```
+
+### 🚀 Example Endpoint
+
+The API, Resources, and Models all come together in the endpoint. The endpoint is a TypeScript file that contains the business logic for the endpoint, and the metadata that describes the endpoint. The metadata is used by the CDK to create the stack that will host the endpoint, and is also used by the library to create the OpenAPI specification.
+
+Example: [./endpoints/Status.ts](./examples/src/endpoints/Status.ts)
+
+```typescript
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult
+} from 'aws-lambda/trigger/api-gateway-proxy'
+
+import { Construct } from 'constructs'
+import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
+import { MethodResponse } from 'aws-cdk-lib/aws-apigateway'
+
+import { OpenAPIRouteMetadata, OpenAPIHelpers, OpenAPIEnums } from '@connected-web/openapi-rest-api'
+import { ExampleResources } from '../Resources'
+import { ApiResponse } from '../models/ApiResponse'
+
+/* This handler is executed by AWS Lambda when the endpoint is invoked */
+export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+  const statusInfo = process.env.STATUS_INFO ?? JSON.stringify({ message: 'No STATUS_INFO found on env' })
+  return OpenAPIHelpers.lambdaResponse(OpenAPIEnums.httpStatusCodes.success, statusInfo)
+}
+
+/* This section is for route metadata used by CDK to create the stack that will host your endpoint */
+export class StatusEndpoint extends OpenAPIRouteMetadata<ExampleResources> {
+  grantPermissions (scope: Construct, endpoint: NodejsFunction, resources: ExampleResources): void {
+    const serviceBucket = resources.serviceDataBucket
+    serviceBucket.grantRead(endpoint)
+  }
+
+  get operationId (): string {
+    return 'getStatus'
+  }
+
+  get restSignature (): string {
+    return 'GET /status'
+  }
+
+  get routeEntryPoint (): string {
+    return __filename
+  }
+
+  get lambdaConfig (): NodejsFunctionProps {
+    return {
+      environment: {
+        STATUS_INFO: JSON.stringify({
+          deploymentTime: process.env.USE_MOCK_TIME ?? new Date()
+        })
+      }
+    }
+  }
+
+  get methodResponses (): MethodResponse[] {
+    return [{
+      statusCode: '200',
+      responseParameters: {
+        'method.response.header.Content-Type': true,
+        'method.response.header.Access-Control-Allow-Origin': true,
+        'method.response.header.Access-Control-Allow-Credentials': true
+      },
+      responseModels: {
+        'application/json': ApiResponse.model
+      }
+    }]
+  }
+}
+```
+
+### 🔐 API Authorization
+
+By design, all endpoints are protected by an Authorization lambda.
+
+By default, the library will create an authorizer lambda that verifies against a Cognito User Pool. This requires you to pass a list of verifiers to the API Gateway stack, which you will need to create and configure separately to this project. The idea being that you can reuse the same Cognito User Pool between multiple APIs.
+
+All verifiers are checked in order, and the first verifier to return a valid response will be used to authorize the request. If no verifiers return a valid response, the request will be rejected. This allows you to have multiple environments, and to have different verifiers for each environment. For example, you could have a production environment with a production Cognito User Pool, and a development environment with a development Cognito User Pool.
+
+```json
+{
+  "verifiers": [{
+    "name": "Users Dev",
+    "userPoolId": "eu-west-2_VBRbzaly6",
+    "tokenUse": "access",
+    "clientId": "123abc456def789ghi012jkl345",
+    "oauthUrl": "https://connected-web.example.auth.us-east-1.amazoncognito.com"
+  }, {
+    "name": "Apps Dev",
+    "userPoolId": "eu-west-2_VBRbzaly6",
+    "tokenUse": "access",
+    "clientId": "456def789ghi012jkl345123abc",
+    "oauthUrl": "https://connected-web.example.auth.us-east-2.amazoncognito.com"
+  }]
+}
+```
+
+Alternatively, you can supply your own authorizer lambda by passing an ARN to the OpenAPIRestAPI constructor. This allows you to preconfigure, and reuse an existing authorizer between APIs - enabling a single sign-on experience for your users.
+
+```json
+{
+    "AuthorizerARN": "arn:aws:lambda:us-east-3:123456789012:function:connected-web-shared-authorizer"
+}
+```
+
+### Testing
+
+You will likely want pre-deployment tests in place to ensure your stack builds correctly.
+
+See the [tests/api-stack.test.ts](./examples/src/tests/api-stack.test.ts) file for an example.
+
+## Design Considerations
+
+### 🤔 Simplify AWS Lambda API Creation with OpenAPI standards
 
 >Make it as simple as possible, but not simpler.
 
@@ -10,7 +278,7 @@ This library was created to make it easier to create a self-documenting API usin
 
 The architecture is designed to be as cheap as possible to run, whilst still being able to scale massively to meet demand. The code is designed to be as simple as possible to write, whilst still being able to handle complex business logic and support custom CDK resources.
 
-## How
+### 🛠️ Unified AWS Resource Management with CDK
 
 >Things that change together should stay together.
 
@@ -18,32 +286,30 @@ The library uses the AWS CDK to create the AWS resources. The CDK is a framework
 
 The library creates the API Gateway as a Rest API, and uses AWS Lambda to create the endpoints. The library also creates the DNS records, SSL certificate, and an authorizer lambda which verifies against Cognito User Pool to secure the API.
 
-## What
+### 📦 Low-effort AWS Resource Management for On-Demand Deployment
 
 >Easy to deploy, easy to destroy. Recreate from scratch at any time.
 
 An API on a custom hosted zone:
 - e.g. https://my-api.my-hosted-zone.com
 
-By using this library, you will create and configure a large number of AWS resources as part of a Cloud Formation stack. This stack can be deployed and destroyed easuky, and can be recreated from scratch at will. This means that you can easily create a new environment, or recreate an existing environment, at any time - and the costs are minimal. The only substantial ongoing costs are the storage costs for S3 and the hosting costs for the API Gateway.
-
-Lets jump into the resources that are created...
+By using this library, you will create and configure a large number of AWS resources as part of a Cloud Formation stack. This stack can be deployed and destroyed easily, and can be recreated from scratch at will. This means that you can easily create a new environment, or recreate an existing environment, at any time - and the costs are minimal. The only substantial ongoing costs are the storage costs for S3 and the hosting costs for the API Gateway.
 
 ## Architecture
 
-Here is a diagram of the architecture produced by the OpenAPI Rest API library.
+Here is a diagram of the architecture produced by the OpenAPI Rest API library:
 
 ```mermaid
-graph LR
+graph TD
     subgraph AWS[AWS Account]
-        subgraph Cloud Formation[Cloud Formation - CDK Defined Resources]
+        subgraph CloudFormation[CloudFormation]
           subgraph APIGateway[API Gateway]
             subgraph Resources
                 subgraph Methods
                     Lambda
                 end
             end
-            subgraph OpenAPI[OpenAPI 3.0 Spec]
+            subgraph OpenAPI[OpenAPI 3.0]
                 subgraph Paths
                     OperationID
                 end
@@ -55,13 +321,13 @@ graph LR
           end
       end
       subgraph Lambda
-          subgraph Endpoints[TypeScript File]
-              subgraph HandlerFunctions[Handler Functions]
-                  subgraph HandlerFunction[Handler Function]
+          subgraph Endpoints[Endpoints]
+              subgraph HandlerFunctions[Handlers]
+                  subgraph HandlerFunction[Handler]
                   
                   end
               end
-              subgraph MetaData[Endpoint Meta Data]
+              subgraph MetaData[Endpoint Data]
                   MD_PathSignature[Path Signature]
                   MD_OperationID[OperationID]
                   MD_Models[Models]
@@ -69,7 +335,7 @@ graph LR
               end
           end
           subgraph OpenAPIRestAPI[OpenAPI Rest API]
-            subgraph Authorizer[Authorizer Function]
+            subgraph Authorizer[Authorizer]
             end
           end 
       end
@@ -92,9 +358,9 @@ graph LR
         AnyCDKResource[Any CDK Resource]
       end
       subgraph CloudWatch[CloudWatch]
-          subgraph CloudWatchLogGroup[CloudWatch Log Group]
+          subgraph CloudWatchLogGroup[Log Group]
           end
-          subgraph CloudWatchMetrics[CloudWatch Metrics]
+          subgraph CloudWatchMetrics[Metrics]
           end
       end
 
@@ -109,39 +375,47 @@ graph LR
     end
 ```
 
-### Breakdown
+### Key architectural features
 
-There's a lot going on here, so let's break it down.
+- 📋 AWS Account: The deployment location for the API.
+- 🏗️ Cloud Formation: Service for API deployment.
+- 🌐 API Gateway: Tool for API creation.
+- 🚀 Lambda: Service for endpoint creation and business logic.
+- 📄 OpenAPI: Specification for API description and documentation generation.
 
-- AWS Account - The AWS account where the API will be deployed.
-- Cloud Formation - The AWS service that will be used to deploy the API.
-- API Gateway - The AWS service that will be used to create the API.
-- Lambda - The AWS service that will be used to create the endpoints.
-- OpenAPI - The specification that will be used to describe the API - third party tools can use this specification to generate documentation and client libraries.
-- TypeScript File - The file that will be used to define the endpoints.
-- Handler Functions - The functions that will be used to handle the requests; this is where you should write your custom business logic.
-- Endpoint Meta Data - The data that will be used to define the endpoints - this data lives in the TypeScript file with the handler functions, and is used to create the OpenAPI specification.
-- OpenAPI Rest API - The API that will be created using the OpenAPI specification.
-- Authorizer - The function that will be used to authorize requests.
-- Route53 - The AWS service that will be used to create the DNS records.
-- Hosted Zone - The pre-registered DNS zone that will be used to create the DNS records.
-- Record Set - The DNS record that will map the API to a domain name
-- Certificate Manager - The AWS service that will be used to create the SSL certificate for the registered domain name.
-- Certificate - The SSL certificate that will be used to secure the API.
-- Cognito User Pool - An external authentication service that will be used to authorize requests.
-- Custom Resources - Additional AWS resources that are custom to the application's needs.
-- CloudWatch - The AWS service that will be used to access logs and metrics.
-- CloudWatch Log Group - The log group that will be used to store logs from then handler functions when run via AWS Lambda.
-- CloudWatch Metrics - The metrics for each lambda to track system activations and health.
+### Component Key
 
-## Usage
+| Component              | Description                                                       |
+|------------------------|-------------------------------------------------------------------|
+| AWS Account            | The AWS account where the API will be deployed.                   |
+| Cloud Formation        | The AWS service that will be used to deploy the API.              |
+| API Gateway            | The AWS service that will be used to create the API.              |
+| Lambda                 | The AWS service that will be used to create the endpoints.        |
+| OpenAPI                | The specification that will be used to describe the API.          |
+| TypeScript File        | The file that will be used to define the endpoints.               |
+| Handler Functions      | The functions that will be used to handle the requests; this is where you should write your custom business logic. |
+| Endpoint Meta Data     | The data that will be used to define the endpoints; this data lives in the TypeScript file with the handler functions and is used to create the OpenAPI specification. |
+| OpenAPI Rest API       | The library used to create the necessary resources for the API.   |
+| Authorizer             | The function that will be used to authorize requests.             |
+| Route53                | The AWS service that will be used to create the DNS records.      |
+| Hosted Zone            | The pre-registered DNS zone that will be used to create the DNS records. |
+| Record Set             | The DNS record that will map the API to a domain name.            |
+| Certificate Manager    | The AWS service that will be used to create the SSL certificate for the registered domain name. |
+| Certificate            | The SSL certificate that will be used to secure the API.          |
+| Cognito User Pool      | An external authentication service that will be used to authorize requests. |
+| Custom Resources       | Additional AWS resources that are custom to the application's needs. |
+| CloudWatch             | The AWS service that will be used to access logs and metrics.     |
+| CloudWatch Log Group   | The log group that will be used to store logs from the handler functions when run via AWS Lambda. |
+| CloudWatch Metrics     | The metrics for each lambda to track system activations and health. |
 
-To an existing CDK project, add the following dependency:
+## Contributions and Questions
 
-```sh
-npm install @connected-web/openapi-rest-api
-```
+Please raise an issue on GitHub if you have any questions, or if you would like to contribute to the project.
 
-See the [examples](./examples) folder for a practical project example.
+## License
 
-You will likely want pre-deployment tests in place to ensure your stack builds correctly. See the [pre-deployment/api-stack.test.ts](./test-api/src/tests/pre-deployment/api-stack.test.ts) file for an example.
+Released under ISC License
+
+Copyright 2023 Connected Web
+
+See [LICENSE.md](./LICENSE.md) for more information.
