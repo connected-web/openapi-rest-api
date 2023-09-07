@@ -1,6 +1,6 @@
 {
   "name": "openapi-rest-api",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "scripts": {
     "build": "npx tsc",
     "test": "ts-standard && npm run test:unit && npm run test:library",
