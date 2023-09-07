@@ -109,12 +109,18 @@ export default class OpenAPIRestAPI<R> extends Construct {
     if (props.AuthorizerARN !== undefined) {
       authLambda = NodejsFunction.fromFunctionArn(scope, 'ExistingAPIAuthorizer', props.AuthorizerARN)
     } else {
+      const tsPath = path.join(__dirname, props.AuthorizerPath ?? './DefaultAuthorizer.ts')
+      const entryFilePath = fs.existsSync(tsPath) ? tsPath : tsPath.replace('.ts', '.js')
+      if (!fs.existsSync(entryFilePath)) {
+        throw new Error(`OpenAPIRestAPI: Unable to find authorizer file at ${entryFilePath}`)
+      }
+
       authLambda = new NodejsFunction(scope, 'PrivateAPIAuthorizer', {
         memorySize: 256,
         timeout: Duration.seconds(5),
         runtime: Runtime.NODEJS_18_X,
         handler: 'handler',
-        entry: path.join(__dirname, props.AuthorizerPath ?? './DefaultAuthorizer.ts'),
+        entry: entryFilePath,
         bundling: {
           minify: true,
           externalModules: ['aws-sdk']
