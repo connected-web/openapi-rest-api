@@ -1,6 +1,6 @@
 # OpenAPI Rest API
 
-A AWS-CDK library to create a self-documenting AWS API Gateway Rest API using OpenAPI 3.0.0 specification, and AWS Lambda endpoints.
+An AWS-CDK library for building very cheap and extremely scalable OpenAPI documented APIs using AWS API Gateway, and AWS Lambda.
 
 ## Project Goals
 
