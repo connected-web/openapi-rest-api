@@ -1,0 +1,43 @@
+name: Publish Package
+
+on:
+  release:
+    types:
+      - released
+
+jobs:
+  build:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Use Node JS LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Get Release Tag
+        id: release_tag
+        run: echo "tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+
+      - name: Verify tag matches version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG=${{ steps.release_tag.outputs.tag }}
+          if [ "$VERSION" != "$TAG" ]; then
+            echo "Error: Release tag '$TAG' does not match package version '$VERSION'"
+            exit 1
+          fi
+          
+      - uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
