@@ -10,3 +10,5 @@ secure-credentials.json
 
 .github.env
 coverage
+
+dist

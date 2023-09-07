@@ -17,5 +17,5 @@
     "resolveJsonModule": true
   },
   "include": ["**/*.ts", "../test-api/src/ApiStack.ts", "../test-api/src/Resources.ts"],
-  "exclude": ["node_modules", "cdk.out"]
+  "exclude": ["node_modules", "cdk.out", "dist"]
 }

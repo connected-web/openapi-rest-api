@@ -1,7 +1,8 @@
 {
   "name": "openapi-rest-api",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
+    "build": "npx tsc",
     "test": "ts-standard && npm run test:unit && npm run test:library",
     "test:unit": "jest src/tests/unit/**.test.ts",
     "test:library": "jest src/tests/library/**.test.ts",
@@ -42,7 +43,7 @@
   },
   "ts-standard": {
     "ignore": [
-      "cdk.out"
+      "cdk.out", "dist"
     ]
   }
 }

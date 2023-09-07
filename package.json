@@ -1,12 +1,19 @@
 {
   "name": "@connected-web/openapi-rest-api",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An AWS-CDK library for building very cheap and extremely scalable OpenAPI documented APIs using AWS API Gateway, and AWS Lambda.",
-  "main": "library/src/PackageIndex.ts",
+  "main": "library/dist/src/PackageIndex.js",
   "scripts": {
     "lint": "lerna run lint",
     "test": "lerna run test"
   },
+  "files": [
+    "library/dist",
+    "library/src",
+    "library/package.json",
+    "library/README.md",
+    "examples"
+  ],
   "keywords": [],
   "author": "Connected Web",
   "license": "ISC",
