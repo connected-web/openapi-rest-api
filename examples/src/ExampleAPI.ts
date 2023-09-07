@@ -1,10 +1,11 @@
 import * as cdk from 'aws-cdk-lib'
 
+import { Construct } from 'constructs'
 import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
 
 import { ExampleResources } from './Resources'
 import { StatusEndpoint } from './endpoints/Status'
-import { Construct } from 'constructs'
+import { ReceivePayloadEndpoint } from './endpoints/ReceivePayload'
 
 export interface IdentityConfig {
   verifiers: OpenAPIVerifiers
@@ -33,7 +34,8 @@ export class ExampleAPIStack extends cdk.Stack {
     // Add endpoints to API
     apiGateway
       .addEndpoints([
-        new StatusEndpoint()
+        new StatusEndpoint(),
+        new ReceivePayloadEndpoint()
       ])
       .report()
   }

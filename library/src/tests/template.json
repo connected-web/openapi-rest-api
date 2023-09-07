@@ -501,7 +501,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-06T21:03:07.913Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-06T21:04:25.552Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
