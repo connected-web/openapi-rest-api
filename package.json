@@ -10,6 +10,11 @@
   "keywords": [],
   "author": "Connected Web",
   "license": "ISC",
+  "homepage": "https://github.com/connected-web/openapi-rest-api",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/connected-web/openapi-rest-api.git"
+  },
   "workspaces": [
     "library",
     "examples"
