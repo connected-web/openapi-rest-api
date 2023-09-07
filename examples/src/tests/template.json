@@ -501,7 +501,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-06T21:04:25.615Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-07T20:49:08.173Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
@@ -561,7 +561,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-06T21:27:37.586Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-07T20:49:09.767Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
