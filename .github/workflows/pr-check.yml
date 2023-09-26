@@ -27,6 +27,7 @@ jobs:
       working-directory: ./library
       env:
         CREATE_CNAME_RECORD: true
+        OPENAPI_REST_API_REPORT_SUMMARY: true
 
   test-examples:
     name: Example Tests
@@ -49,3 +50,4 @@ jobs:
       working-directory: ./examples
       env:
         CREATE_CNAME_RECORD: true
+        OPENAPI_REST_API_REPORT_SUMMARY: true

@@ -310,7 +310,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
     console.log('OpenAPIRestAPI Routes:', Object.values(this.routeMap).map(route => route.path))
 
     // Update step summary
-    if (process.env.GITHUB_STEP_SUMMARY !== undefined) {
+    if (process.env.GITHUB_STEP_SUMMARY !== undefined && process.env.OPENAPI_REST_API_REPORT_SUMMARY !== undefined) {
       try {
         const summary = [
           `# ${this.restApi.restApiName}`,

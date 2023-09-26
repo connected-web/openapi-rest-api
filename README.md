@@ -408,6 +408,26 @@ graph TD
 | CloudWatch Log Group   | The log group that will be used to store logs from the handler functions when run via AWS Lambda. |
 | CloudWatch Metrics     | The metrics for each lambda to track system activations and health. |
 
+## Environment Variables for CI
+
+### CREATE_CNAME_RECORD
+
+If this environment variable is set to `true`, the CDK stack will create a CNAME record in the hosted zone that points to the API Gateway. This is useful if you want to host the API on a custom domain. It is sometimes useful to toggle this  when creating and destroying new resources to avoid CloudFormation conflicts.
+
+### OPENAPI_REST_API_REPORT_SUMMARY
+
+If this environment variable is set to `true`, the CDK stack will report the API Gateway URL and the OpenAPI specification URL. This is useful if you want to quickly access the API Gateway URL and the OpenAPI specification URL after deployment. It also summarises a table of endpoints, which is useful documentation for the API that you can copy and paste out of the `GITHUB_STEP_SUMMARY`.
+
+For example:
+
+```
+      - name: Deploy the CDK Stack
+        run: npm run deploy -- --require-approval never
+        env:
+          CREATE_CNAME_RECORD: true
+          OPENAPI_REST_API_REPORT_SUMMARY: true
+```
+
 ## Contributions and Questions
 
 Please raise an issue on GitHub if you have any questions, or if you would like to contribute to the project.
