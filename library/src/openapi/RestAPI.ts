@@ -306,7 +306,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
     return endpoint
   }
 
-  addEndpoints (endpoints: Array<OpenAPIRouteMetadata<R>>): OpenAPIRestAPI<R> {
+  addEndpoints (endpoints: Array<OpenAPIRouteMetadata<R>> | { [key: string]: OpenAPIRouteMetadata<R> }): OpenAPIRestAPI<R> {
     if (Array.isArray(endpoints)) {
       return this.addEndpointsArray(endpoints)
     } else {

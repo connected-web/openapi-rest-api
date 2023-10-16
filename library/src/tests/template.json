@@ -497,11 +497,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "30f331b51fc202cae75b5e7737d977c56bb196dbdb79b19d8a5390193cf7f2db.zip"
+          "S3Key": "e712572818d1f88e2d701374c9208395a548772557da86fbdabe74f1765e25f5.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-07T20:49:13.966Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2023-10-16T11:46:19.273Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
