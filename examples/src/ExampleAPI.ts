@@ -35,7 +35,7 @@ export class ExampleAPIStack extends cdk.Stack {
     apiGateway
       .addEndpoints([
         new StatusEndpoint(),
-        new ReceivePayloadEndpoint()
+        new ReceivePayloadEndpoint(sharedResources)
       ])
       .report()
   }

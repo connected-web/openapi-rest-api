@@ -67,6 +67,14 @@ export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayP
 
 /* This section is for route metadata used by CDK to create the stack that will host your endpoint */
 export class ReceivePayloadEndpoint extends OpenAPIRouteMetadata<ExampleResources> {
+
+  resources: ExampleResources
+
+  constructor (sharedResources: ExampleResources) {
+    super()
+    this.resources = sharedResources
+  }
+
   grantPermissions (scope: Construct, endpoint: NodejsFunction, resources: ExampleResources): void {
     const serviceBucket = resources.serviceDataBucket
     serviceBucket.grantRead(endpoint)
@@ -89,7 +97,8 @@ export class ReceivePayloadEndpoint extends OpenAPIRouteMetadata<ExampleResource
       environment: {
         STATUS_INFO: JSON.stringify({
           deploymentTime: process.env.USE_MOCK_TIME ?? new Date()
-        })
+        }),
+        SERVICE_DATA_BUCKET_NAME: this.resources.serviceDataBucket.bucketName
       }
     }
   }
