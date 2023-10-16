@@ -70,7 +70,7 @@ export default class OpenAPIFunction {
       entry: routeEntryPoint,
       bundling: {
         minify: true,
-        externalModules: ['aws-sdk']
+        externalModules: ['@aws-sdk/*', 'aws-sdk', 'aws-cdk-lib', 'aws-lambda', 'constructs', 'source-map-support']
       }
     }
 

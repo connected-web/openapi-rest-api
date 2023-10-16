@@ -15,14 +15,14 @@ export class ExampleResources {
   scope: Construct
   stack: cdk.Stack
 
+  serviceDataBucket: s3.Bucket
+
   constructor (scope: Construct, stack: cdk.Stack) {
     this.scope = scope
     this.stack = stack
-  }
 
-  get serviceDataBucket (): s3.Bucket {
     const serviceBucketName = process.env.SERVICE_BUCKET_NAME ?? 'test-api-service-data-bucket'
-    return new s3.Bucket(this.stack, 'ExampleServiceBucket', {
+    this.serviceDataBucket = new s3.Bucket(this.stack, 'ExampleServiceBucket', {
       bucketName: serviceBucketName,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       versioned: true
