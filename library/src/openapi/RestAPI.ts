@@ -8,6 +8,7 @@ import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatem
 
 import OpenAPIEndpoint from './Endpoint'
 import OpenAPIFunction from './Function'
+import { generateOperationId } from './Operations'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import path from 'path'
 import { OpenAPIRouteMetadata } from './Routes'
@@ -285,7 +286,10 @@ export default class OpenAPIRestAPI<R> extends Construct {
       throw new Error(`Unsupported HTTP method: ${methodKey}; supported keys are: ${Object.keys(supportedHttpMethods).join(', ')}`)
     }
 
-    const oapiFunction = new OpenAPIFunction(endpointMetaData.operationId)
+    endpointMetaData.restSignatureOverride = `${methodKey} ${path}`
+    const operationId = endpointMetaData.operationId ?? generateOperationId(endpointMetaData.restSignatureOverride)
+
+    const oapiFunction = new OpenAPIFunction(operationId)
     const lambda = oapiFunction.createNodeJSLambda(this, endpointMetaData.routeEntryPoint, endpointMetaData.lambdaConfig)
     endpointMetaData.grantPermissions(this, lambda, this.sharedResources)
     const endpoint = new OpenAPIEndpoint<OpenAPIFunction>(method, path, oapiFunction)

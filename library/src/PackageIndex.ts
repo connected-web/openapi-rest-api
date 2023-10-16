@@ -5,6 +5,7 @@ import OpenAPIRestAPI, { Verifier } from './openapi/RestAPI'
 import { OpenAPIRouteMetadata } from './openapi/Routes'
 import { OpenAPIModelFactory } from './openapi/ModelFactory'
 import { corsHeaders, httpStatusCodes, lambdaResponse } from './openapi/Response'
+import { generateOperationId } from './openapi/Operations'
 
 export type OpenAPIVerifiers = Verifier[]
 
@@ -15,6 +16,10 @@ export const OpenAPIEnums = {
 
 export const OpenAPIHelpers = {
   lambdaResponse
+}
+
+export const OpenAPIOperations = {
+  generateOperationId
 }
 
 export {

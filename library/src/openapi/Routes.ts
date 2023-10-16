@@ -2,6 +2,7 @@
 import { Construct } from 'constructs'
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { MethodResponse, IModel } from 'aws-cdk-lib/aws-apigateway'
+import { generateOperationId } from './Operations'
 
 /**
  * This is the interface that all routes must implement
@@ -15,6 +16,11 @@ import { MethodResponse, IModel } from 'aws-cdk-lib/aws-apigateway'
  */
 export abstract class OpenAPIRouteMetadata<R> {
   /**
+   * Override the rest signature that is used to generate the default operationId
+   */
+  public restSignatureOverride?: string
+
+  /**
    * Grant permissions to the endpoint to access resources
    * @param scope      Construct scope - use to create new resources such as policies
    * @param endpoint   Lambda endpoint - use to grant permissions to the route to access resources
@@ -24,8 +30,12 @@ export abstract class OpenAPIRouteMetadata<R> {
 
   /**
    * The operationId is used to identify the endpoint in the OpenAPI spec
+   *
+   * If left unspecified it will be generated from the restSignature, e.g. 'METHOD /operation/path' => 'methodOperationPath'
    */
-  abstract get operationId (): string
+  public get operationId (): string | undefined {
+    return undefined
+  }
 
   /**
    * The restSignature is used to create a path in API Gateway to map to your endpoint handler
@@ -43,6 +53,10 @@ export abstract class OpenAPIRouteMetadata<R> {
    *   return 'DELETE /record/{recordId}'
    */
   public get restSignature (): string | undefined {
+    const { restSignatureOverride } = this
+    if (restSignatureOverride !== undefined) {
+      return generateOperationId(restSignatureOverride)
+    }
     return undefined
   }
 
