@@ -33,10 +33,10 @@ export class ExampleAPIStack extends cdk.Stack {
 
     // Add endpoints to API
     apiGateway
-      .addEndpoints([
-        new StatusEndpoint(),
-        new ReceivePayloadEndpoint()
-      ])
+      .addEndpoints({
+        'GET /status': new StatusEndpoint(),
+        'PUT /receive-payload/{pathParam}': new ReceivePayloadEndpoint(sharedResources)
+      })
       .report()
   }
 }

@@ -3,7 +3,7 @@
   "version": "0.1.3",
   "scripts": {
     "build": "npx tsc",
-    "test": "ts-standard && npm run test:unit && npm run test:library",
+    "test": "ts-standard && jest src/tests/**/*.test.ts",
     "test:unit": "jest src/tests/unit/**.test.ts",
     "test:library": "jest src/tests/library/**.test.ts",
     "lint": "ts-standard",

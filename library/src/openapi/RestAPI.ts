@@ -1,6 +1,6 @@
 import { CfnOutput, Duration } from 'aws-cdk-lib'
 import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam'
-import { RequestAuthorizer, LambdaIntegration, IdentitySource, RestApi, Cors, IResource, Resource } from 'aws-cdk-lib/aws-apigateway'
+import { RequestAuthorizer, LambdaIntegration, IdentitySource, RestApi, Cors, IResource, Resource, MethodOptions } from 'aws-cdk-lib/aws-apigateway'
 import { HttpMethod, IFunction, Runtime } from 'aws-cdk-lib/aws-lambda'
 import { Construct } from 'constructs'
 import { CnameRecord, HostedZone } from 'aws-cdk-lib/aws-route53'
@@ -105,10 +105,10 @@ export default class OpenAPIRestAPI<R> extends Construct {
       throw new Error('OpenAPIRestAPI: AuthorizerARN and configurable Verifiers are mutually exclusive; please exclude Verifiers from your config or switch to the default authorizer by clearing the AuthorizerARN property.')
     }
 
-    let authLambda: IFunction
+    let authLambda: IFunction | undefined
     if (props.AuthorizerARN !== undefined) {
       authLambda = NodejsFunction.fromFunctionArn(scope, 'ExistingAPIAuthorizer', props.AuthorizerARN)
-    } else {
+    } else if (props.Verifiers.length > 0) {
       const tsPath = path.join(__dirname, props.AuthorizerPath ?? './DefaultAuthorizer.ts')
       const entryFilePath = fs.existsSync(tsPath) ? tsPath : tsPath.replace('.ts', '.js')
       if (!fs.existsSync(entryFilePath)) {
@@ -131,10 +131,13 @@ export default class OpenAPIRestAPI<R> extends Construct {
       })
     }
 
-    const requestAuthorizer = new RequestAuthorizer(this, 'PrivateApiRequestAuthorizer', {
-      handler: authLambda,
-      identitySources: [IdentitySource.header('Authorization')]
-    })
+    const defaultMethodOptions: MethodOptions | any = {}
+    if (authLambda !== undefined) {
+      defaultMethodOptions.authorizer = new RequestAuthorizer(this, 'PrivateApiRequestAuthorizer', {
+        handler: authLambda,
+        identitySources: [IdentitySource.header('Authorization')]
+      })
+    }
 
     this.description = props.Description ?? 'No description provided'
     const api = new RestApi(this, id, {
@@ -142,7 +145,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
       deployOptions: {
         stageName: 'v1'
       },
-      defaultMethodOptions: { authorizer: requestAuthorizer },
+      defaultMethodOptions,
       defaultCorsPreflightOptions: {
         allowOrigins: Cors.ALL_ORIGINS,
         allowMethods: Cors.ALL_METHODS,
@@ -253,7 +256,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
     return this
   }
 
-  createEndpointFromMetadata (endpointMetaData: OpenAPIRouteMetadata<R>): OpenAPIEndpoint<OpenAPIFunction> {
+  private createEndpointFromMetadata (endpointMetaData: OpenAPIRouteMetadata<R>, pathOverride?: string): OpenAPIEndpoint<OpenAPIFunction> {
     const supportedHttpMethods: { [key: string]: HttpMethod | undefined } = {
       GET: HttpMethod.GET,
       POST: HttpMethod.POST,
@@ -262,8 +265,21 @@ export default class OpenAPIRestAPI<R> extends Construct {
     }
 
     const { restSignature } = endpointMetaData
-    const [methodKey, path] = restSignature.split(' ')
+
+    if (pathOverride === undefined && restSignature === undefined) {
+      throw new Error('Unable to create endpoint; neither a restSignature nor pathOverride were supplied - all routes must declare a path in the form METHOD /path, e.g. GET /status')
+    }
+
+    if (pathOverride !== undefined && restSignature !== undefined && pathOverride !== restSignature) {
+      throw new Error(`Unable to create endpoint; both a restSignature and pathOverride were supplied, but they do not match: ${restSignature} !== ${pathOverride}`)
+    }
+
+    const [methodKey, path] = typeof pathOverride === 'string' ? String(pathOverride).split(' ') : String(restSignature).split(' ')
     const method = supportedHttpMethods[methodKey]
+
+    if (path === undefined || path === '') {
+      throw new Error(`Invalid path from rest signature: ${path}, expected a path in the form METHOD /path, e.g. GET /status`)
+    }
 
     if (method === undefined) {
       throw new Error(`Unsupported HTTP method: ${methodKey}; supported keys are: ${Object.keys(supportedHttpMethods).join(', ')}`)
@@ -293,17 +309,47 @@ export default class OpenAPIRestAPI<R> extends Construct {
     return endpoint
   }
 
-  addEndpoints (endpoints: Array<OpenAPIRouteMetadata<R>>): OpenAPIRestAPI<R> {
+  addEndpoints (endpoints: Array<OpenAPIRouteMetadata<R>> | { [key: string]: OpenAPIRouteMetadata<R> }): OpenAPIRestAPI<R> {
+    if (Array.isArray(endpoints)) {
+      return this.addEndpointsArray(endpoints)
+    } else {
+      return this.addEndpointsObject(endpoints)
+    }
+  }
+
+  private addEndpointsArray (endpoints: Array<OpenAPIRouteMetadata<R>>): OpenAPIRestAPI<R> {
     endpoints.forEach(endpointMetaData => {
-      try {
-        const endpoint = this.createEndpointFromMetadata(endpointMetaData)
-        this.addEndpoint(endpoint)
-      } catch (ex) {
-        const error = ex as Error
-        console.error(`Unable to create endpoint for ${endpointMetaData.operationId} at ${endpointMetaData.restSignature}; Error: ${error.message}}`)
-      }
+      const endpoint = this.createEndpointFromMetadata(endpointMetaData)
+      this.addEndpoint(endpoint)
     })
     return this
+  }
+
+  private addEndpointsObject (endpoints: { [key: string]: OpenAPIRouteMetadata<R> }): OpenAPIRestAPI<R> {
+    Object.entries(endpoints).forEach(([restSignature, endpointMetaData]) => {
+      const endpoint = this.createEndpointFromMetadata(endpointMetaData, restSignature)
+      this.addEndpoint(endpoint)
+    })
+    return this
+  }
+
+  generateReportMarkdown (): string {
+    const summary = [
+      `# ${this.restApi.restApiName}`,
+      '',
+      `${String(this.description ?? 'No description provided')}`,
+      '',
+      `Registered URL: https://${this.vanityDomain ?? 'no-vanity-url-registered'}`,
+      '',
+      '## Endpoints',
+      '',
+      // Create a table from the endpoints array containing operationId, httpMethod, and path
+      '| HTTP Method | Path | Operation ID |',
+      '| --- | --- | --- |',
+      ...this.endpoints.map(endpoint => `| ${endpoint.httpMethod} | ${endpoint.path} | ${endpoint.value?.operationId ?? 'undefined-operation-id'} |`),
+      ''
+    ]
+    return summary.join('\n')
   }
 
   report (): void {
@@ -312,25 +358,11 @@ export default class OpenAPIRestAPI<R> extends Construct {
     // Update step summary
     if (process.env.GITHUB_STEP_SUMMARY !== undefined && process.env.OPENAPI_REST_API_REPORT_SUMMARY !== undefined) {
       try {
-        const summary = [
-          `# ${this.restApi.restApiName}`,
-          '',
-          `${String(this.description ?? 'No description provided')}`,
-          '',
-          `Registered URL: https://${this.vanityDomain ?? 'no-vanity-url-registered'}`,
-          '',
-          '## Endpoints',
-          '',
-          // Create a table from the endpoints array containing operationId, httpMethod, and path
-          '| Operation ID | HTTP Method | Path |',
-          '| --- | --- | --- |',
-          ...this.endpoints.map(endpoint => `| ${endpoint.value?.operationId ?? 'undefined-operation-id'} | ${endpoint.httpMethod} | ${endpoint.path} |`),
-          ''
-        ]
+        const markdownSummary = this.generateReportMarkdown()
 
-        console.log('Markdown for Github job summary:\n\n', summary.join('\n'))
+        console.log('Markdown for Github job summary:\n\n', markdownSummary)
 
-        fs.writeFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n'), { flag: 'a' })
+        fs.writeFileSync(process.env.GITHUB_STEP_SUMMARY, markdownSummary, { flag: 'a' })
       } catch (ex) {
         const error = ex as Error
         console.error('Unable to produce Github step summary:', error.message)

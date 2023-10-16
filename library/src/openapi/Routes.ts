@@ -42,7 +42,9 @@ export abstract class OpenAPIRouteMetadata<R> {
    *   return 'PUT  /profile/{profileId}'
    *   return 'DELETE /record/{recordId}'
    */
-  abstract get restSignature (): string
+  public get restSignature (): string | undefined {
+    return undefined
+  }
 
   /**
    * The routeEntryPoint is used to configure the NodeJSFunction that will be created by CDK
