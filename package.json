@@ -5,6 +5,7 @@
   "main": "library/dist/src/PackageIndex.js",
   "scripts": {
     "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
     "test": "lerna run test"
   },
   "files": [

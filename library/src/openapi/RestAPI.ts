@@ -253,7 +253,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
     return this
   }
 
-  createEndpointFromMetadata (endpointMetaData: OpenAPIRouteMetadata<R>): OpenAPIEndpoint<OpenAPIFunction> {
+  createEndpointFromMetadata (endpointMetaData: OpenAPIRouteMetadata<R>, pathOverride?: string): OpenAPIEndpoint<OpenAPIFunction> {
     const supportedHttpMethods: { [key: string]: HttpMethod | undefined } = {
       GET: HttpMethod.GET,
       POST: HttpMethod.POST,
@@ -262,11 +262,24 @@ export default class OpenAPIRestAPI<R> extends Construct {
     }
 
     const { restSignature } = endpointMetaData
-    const [methodKey, path] = restSignature.split(' ')
+
+    if (pathOverride === undefined && restSignature === undefined) {
+      throw new Error('Unable to create endpoint; neither a restSignature nor pathOverride were supplied - all routes must declare a path in the form METHOD /path, e.g. GET /status')
+    }
+
+    if (pathOverride !== undefined && restSignature !== undefined && pathOverride !== restSignature) {
+      throw new Error(`Unable to create endpoint; both a restSignature and pathOverride were supplied, but they do not match: ${restSignature} !== ${pathOverride}`)
+    }
+
+    const [methodKey, path] = typeof pathOverride === 'string' ? pathOverride.split(' ') : restSignature.split(' ')
     const method = supportedHttpMethods[methodKey]
 
     if (method === undefined) {
       throw new Error(`Unsupported HTTP method: ${methodKey}; supported keys are: ${Object.keys(supportedHttpMethods).join(', ')}`)
+    }
+
+    if (path === undefined || path === '') {
+      throw new Error(`Invalid path from rest signature: ${path}, expected a path in the form METHOD /path, e.g. GET /status`)
     }
 
     const oapiFunction = new OpenAPIFunction(endpointMetaData.operationId)
@@ -294,13 +307,34 @@ export default class OpenAPIRestAPI<R> extends Construct {
   }
 
   addEndpoints (endpoints: Array<OpenAPIRouteMetadata<R>>): OpenAPIRestAPI<R> {
+    if (Array.isArray(endpoints)) {
+      return this.addEndpointsArray(endpoints)
+    } else {
+      return this.addEndpointsObject(endpoints)
+    }
+  }
+
+  addEndpointsArray (endpoints: Array<OpenAPIRouteMetadata<R>>): OpenAPIRestAPI<R> {
     endpoints.forEach(endpointMetaData => {
       try {
         const endpoint = this.createEndpointFromMetadata(endpointMetaData)
         this.addEndpoint(endpoint)
       } catch (ex) {
         const error = ex as Error
-        console.error(`Unable to create endpoint for ${endpointMetaData.operationId} at ${endpointMetaData.restSignature}; Error: ${error.message}}`)
+        console.error(`Unable to create endpoint for ${endpointMetaData.operationId} at ${String(endpointMetaData.restSignature)}; Error: ${error.message}}`)
+      }
+    })
+    return this
+  }
+
+  addEndpointsObject (endpoints: { [key: string]: OpenAPIRouteMetadata<R> }): OpenAPIRestAPI<R> {
+    Object.entries(endpoints).forEach(([restSignature, endpointMetaData]) => {
+      try {
+        const endpoint = this.createEndpointFromMetadata(endpointMetaData, restSignature)
+        this.addEndpoint(endpoint)
+      } catch (ex) {
+        const error = ex as Error
+        console.error(`Unable to create endpoint for ${endpointMetaData.operationId} at ${String(restSignature)}; Error: ${error.message}}`)
       }
     })
     return this
