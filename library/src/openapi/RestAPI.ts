@@ -271,7 +271,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
       throw new Error(`Unable to create endpoint; both a restSignature and pathOverride were supplied, but they do not match: ${restSignature} !== ${pathOverride}`)
     }
 
-    const [methodKey, path] = typeof pathOverride === 'string' ? pathOverride.split(' ') : restSignature.split(' ')
+    const [methodKey, path] = typeof pathOverride === 'string' ? String(pathOverride).split(' ') : String(restSignature).split(' ')
     const method = supportedHttpMethods[methodKey]
 
     if (method === undefined) {
