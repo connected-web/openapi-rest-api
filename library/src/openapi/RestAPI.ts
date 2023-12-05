@@ -215,6 +215,11 @@ export default class OpenAPIRestAPI<R> extends Construct {
     return this.addEndpoint(endpoint)
   }
 
+  patch (path: string, lambda: OpenAPIFunction): OpenAPIRestAPI<R> {
+    const endpoint = new OpenAPIEndpoint(HttpMethod.PATCH, path, lambda)
+    return this.addEndpoint(endpoint)
+  }
+
   post (path: string, lambda: OpenAPIFunction): OpenAPIRestAPI<R> {
     const endpoint = new OpenAPIEndpoint(HttpMethod.POST, path, lambda)
     return this.addEndpoint(endpoint)
