@@ -48,6 +48,7 @@ export abstract class OpenAPIRouteMetadata<R> {
    *
    * Examples:
    *   return 'GET /status'
+   *   return 'PATCH /users/{userId}'
    *   return 'POST /users/{userId}/profile'
    *   return 'PUT  /profile/{profileId}'
    *   return 'DELETE /record/{recordId}'

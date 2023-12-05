@@ -20,6 +20,10 @@ class StubGetEndpoint extends StubEndpoint {
   get operationId (): string { return 'getStub' }
 }
 
+class StubPatchEndpoint extends StubEndpoint {
+  get operationId (): string { return 'patchStub' }
+}
+
 class StubPutEndpoint extends StubEndpoint {
   get operationId (): string { return 'putStub' }
 }
@@ -59,6 +63,11 @@ describe('Rest Signatures', () => {
     expect(() => api.addEndpoints({ 'GET /test': endpoint })).not.toThrow()
   })
 
+  it('should process PATCH paths', () => {
+    const endpoint = new StubPatchEndpoint()
+    expect(() => api.addEndpoints({ 'PATCH /test': endpoint })).not.toThrow()
+  })
+
   it('should process PUT paths', () => {
     const endpoint = new StubPutEndpoint()
     expect(() => api.addEndpoints({ 'PUT /test': endpoint })).not.toThrow()
@@ -76,7 +85,7 @@ describe('Rest Signatures', () => {
 
   it('should throw an error for unsupported HTTP methods', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'TEAPOT /test': endpoint })).toThrowError('Unsupported HTTP method: TEAPOT; supported keys are: GET, POST, PUT, DELETE')
+    expect(() => api.addEndpoints({ 'TEAPOT /test': endpoint })).toThrowError('Unsupported HTTP method: TEAPOT; supported keys are: GET, PATCH, POST, PUT, DELETE')
   })
 
   it('should throw an error when an invalid path signature is supplied', () => {
@@ -113,6 +122,7 @@ describe('Rest Signatures', () => {
       '| HTTP Method | Path | Operation ID |',
       '| --- | --- | --- |',
       '| GET | /test | getStub |',
+      '| PATCH | /test | patchStub |',
       '| PUT | /test | putStub |',
       '| POST | /test | postStub |',
       '| DELETE | /test | deleteStub |',
