@@ -20,6 +20,10 @@ class StubGetEndpoint extends StubEndpoint {
   get operationId (): string { return 'getStub' }
 }
 
+class StubPatchEndpoint extends StubEndpoint {
+  get operationId (): string { return 'patchStub' }
+}
+
 class StubPutEndpoint extends StubEndpoint {
   get operationId (): string { return 'putStub' }
 }
@@ -57,6 +61,11 @@ describe('Rest Signatures', () => {
   it('should process GET paths', () => {
     const endpoint = new StubGetEndpoint()
     expect(() => api.addEndpoints({ 'GET /test': endpoint })).not.toThrow()
+  })
+
+  it('should process PATCH paths', () => {
+    const endpoint = new StubPatchEndpoint()
+    expect(() => api.addEndpoints({ 'PATCH /test': endpoint })).not.toThrow()
   })
 
   it('should process PUT paths', () => {
@@ -113,6 +122,7 @@ describe('Rest Signatures', () => {
       '| HTTP Method | Path | Operation ID |',
       '| --- | --- | --- |',
       '| GET | /test | getStub |',
+      '| PATCH | /test | patchStub |',
       '| PUT | /test | putStub |',
       '| POST | /test | postStub |',
       '| DELETE | /test | deleteStub |',
