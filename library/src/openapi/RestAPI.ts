@@ -260,6 +260,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
   private createEndpointFromMetadata (endpointMetaData: OpenAPIRouteMetadata<R>, pathOverride?: string): OpenAPIEndpoint<OpenAPIFunction> {
     const supportedHttpMethods: { [key: string]: HttpMethod | undefined } = {
       GET: HttpMethod.GET,
+      PATCH: HttpMethod.PATCH,
       POST: HttpMethod.POST,
       PUT: HttpMethod.PUT,
       DELETE: HttpMethod.DELETE
