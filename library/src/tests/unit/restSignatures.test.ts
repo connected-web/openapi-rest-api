@@ -76,7 +76,7 @@ describe('Rest Signatures', () => {
 
   it('should throw an error for unsupported HTTP methods', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'TEAPOT /test': endpoint })).toThrowError('Unsupported HTTP method: TEAPOT; supported keys are: GET, POST, PUT, DELETE')
+    expect(() => api.addEndpoints({ 'TEAPOT /test': endpoint })).toThrowError('Unsupported HTTP method: TEAPOT; supported keys are: GET, PATCH, POST, PUT, DELETE')
   })
 
   it('should throw an error when an invalid path signature is supplied', () => {

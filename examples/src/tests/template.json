@@ -1,64 +1,15 @@
 {
   "Resources": {
-    "ExampleAPIPrivateApiRequestAuthorizerDB7A3947": {
-      "Type": "AWS::ApiGateway::Authorizer",
+    "ExampleServiceBucketFDFBB652": {
+      "Type": "AWS::S3::Bucket",
       "Properties": {
-        "AuthorizerUri": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Fn::Select": [
-                  1,
-                  {
-                    "Fn::Split": [
-                      ":",
-                      {
-                        "Fn::GetAtt": [
-                          "PrivateAPIAuthorizer2400616B",
-                          "Arn"
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              ":apigateway:",
-              {
-                "Fn::Select": [
-                  3,
-                  {
-                    "Fn::Split": [
-                      ":",
-                      {
-                        "Fn::GetAtt": [
-                          "PrivateAPIAuthorizer2400616B",
-                          "Arn"
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              ":lambda:path/2015-03-31/functions/",
-              {
-                "Fn::GetAtt": [
-                  "PrivateAPIAuthorizer2400616B",
-                  "Arn"
-                ]
-              },
-              "/invocations"
-            ]
-          ]
-        },
-        "IdentitySource": "method.request.header.Authorization",
-        "Name": "MyTestStackExampleAPIPrivateApiRequestAuthorizerEBBBC25A",
-        "RestApiId": {
-          "Ref": "ExampleAPI61CA833D"
-        },
-        "Type": "REQUEST"
-      }
+        "BucketName": "test-api-service-data-bucket",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete"
     },
     "ExampleAPI61CA833D": {
       "Type": "AWS::ApiGateway::RestApi",
@@ -116,7 +67,7 @@
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain"
     },
-    "ExampleAPIDeployment7211F28Ded8ef74cf942010ebffeb40cf4de6b24": {
+    "ExampleAPIDeployment7211F28D85e16ec536cef23a4a0b795026a9d392": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "Description": "Example API - https://github.com/connected-web/openapi-rest-api",
@@ -125,8 +76,14 @@
         }
       },
       "DependsOn": [
+        "ApiPayloadModel2BDE964E",
         "ApiResponseModel7ED3C248",
         "ExampleAPIOPTIONS3CB2EF6E",
+        "ExampleAPIreceivepayloadpathParamOPTIONS560DFB8E",
+        "ExampleAPIreceivepayloadpathParamPUTD17F19A1",
+        "ExampleAPIreceivepayloadpathParamD39EAFE4",
+        "ExampleAPIreceivepayloadOPTIONS8536B744",
+        "ExampleAPIreceivepayload318A0B3F",
         "ExampleAPIstatusGETB4B924D6",
         "ExampleAPIstatusOPTIONSEC7DF4E1",
         "ExampleAPIstatus12420EBC"
@@ -136,7 +93,7 @@
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
         "DeploymentId": {
-          "Ref": "ExampleAPIDeployment7211F28Ded8ef74cf942010ebffeb40cf4de6b24"
+          "Ref": "ExampleAPIDeployment7211F28D85e16ec536cef23a4a0b795026a9d392"
         },
         "RestApiId": {
           "Ref": "ExampleAPI61CA833D"
@@ -314,10 +271,7 @@
     "ExampleAPIstatusGETB4B924D6": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": {
-          "Ref": "ExampleAPIPrivateApiRequestAuthorizerDB7A3947"
-        },
+        "AuthorizationType": "NONE",
         "HttpMethod": "GET",
         "Integration": {
           "Credentials": {
@@ -372,6 +326,246 @@
         }
       }
     },
+    "ExampleAPIreceivepayload318A0B3F": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ExampleAPI61CA833D",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "receive-payload",
+        "RestApiId": {
+          "Ref": "ExampleAPI61CA833D"
+        }
+      }
+    },
+    "ExampleAPIreceivepayloadOPTIONS8536B744": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Authorization,content-type'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": "204"
+            }
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }"
+          },
+          "Type": "MOCK"
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            },
+            "StatusCode": "204"
+          }
+        ],
+        "ResourceId": {
+          "Ref": "ExampleAPIreceivepayload318A0B3F"
+        },
+        "RestApiId": {
+          "Ref": "ExampleAPI61CA833D"
+        }
+      }
+    },
+    "ExampleAPIreceivepayloadpathParamD39EAFE4": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ExampleAPIreceivepayload318A0B3F"
+        },
+        "PathPart": "{pathParam}",
+        "RestApiId": {
+          "Ref": "ExampleAPI61CA833D"
+        }
+      }
+    },
+    "ExampleAPIreceivepayloadpathParamOPTIONS560DFB8E": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Authorization,content-type'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "StatusCode": "204"
+            }
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }"
+          },
+          "Type": "MOCK"
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            },
+            "StatusCode": "204"
+          }
+        ],
+        "ResourceId": {
+          "Ref": "ExampleAPIreceivepayloadpathParamD39EAFE4"
+        },
+        "RestApiId": {
+          "Ref": "ExampleAPI61CA833D"
+        }
+      }
+    },
+    "ExampleAPIreceivepayloadpathParamPUTApiPermissionMyTestStackExampleAPI8A72BB8EPUTreceivepayloadpathParamDEE49722": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ExampleAPIStorePayload1114E802",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:eu-west-2:1234567890:",
+              {
+                "Ref": "ExampleAPI61CA833D"
+              },
+              "/",
+              {
+                "Ref": "ExampleAPIDeploymentStagev1550204A9"
+              },
+              "/PUT/receive-payload/*"
+            ]
+          ]
+        }
+      }
+    },
+    "ExampleAPIreceivepayloadpathParamPUTApiPermissionTestMyTestStackExampleAPI8A72BB8EPUTreceivepayloadpathParam08A6E985": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ExampleAPIStorePayload1114E802",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:eu-west-2:1234567890:",
+              {
+                "Ref": "ExampleAPI61CA833D"
+              },
+              "/test-invoke-stage/PUT/receive-payload/*"
+            ]
+          ]
+        }
+      }
+    },
+    "ExampleAPIreceivepayloadpathParamPUTD17F19A1": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "PUT",
+        "Integration": {
+          "Credentials": {
+            "Fn::GetAtt": [
+              "ExampleAPIApiExecutionRoleF249491B",
+              "Arn"
+            ]
+          },
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:eu-west-2:lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "ExampleAPIStorePayload1114E802",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": {
+                "Ref": "ApiResponseModel7ED3C248"
+              }
+            },
+            "ResponseParameters": {
+              "method.response.header.Content-Type": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "OperationName": "storePayload",
+        "RequestModels": {
+          "application/json": {
+            "Ref": "ApiPayloadModel2BDE964E"
+          }
+        },
+        "RequestParameters": {
+          "method.request.path.pathParam": true,
+          "method.request.querystring.color": false
+        },
+        "ResourceId": {
+          "Ref": "ExampleAPIreceivepayloadpathParamD39EAFE4"
+        },
+        "RestApiId": {
+          "Ref": "ExampleAPI61CA833D"
+        }
+      }
+    },
     "ExampleAPIApiExecutionRoleF249491B": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -400,6 +594,16 @@
               "Resource": {
                 "Fn::GetAtt": [
                   "ExampleAPIGetStatusDD96DC0A",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ExampleAPIStorePayload1114E802",
                   "Arn"
                 ]
               }
@@ -497,11 +701,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "17229a1c144f3cdc29f7338482711a6dddee2d9010e1032395a874c8a74789a8.zip"
+          "S3Key": "7d33094bbf13d31a5e6930ccf43bb6d75f43c73b31fe8b217dbca1e8bf476343.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-07T20:49:08.173Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2023-12-05T12:17:39.170Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
@@ -552,16 +756,65 @@
         ]
       }
     },
+    "ExampleAPIStorePayloadServiceRoleDefaultPolicy79822C62": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ExampleServiceBucketFDFBB652",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ExampleServiceBucketFDFBB652",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "ExampleAPIStorePayloadServiceRoleDefaultPolicy79822C62",
+        "Roles": [
+          {
+            "Ref": "ExampleAPIStorePayloadServiceRoleB094D7CF"
+          }
+        ]
+      }
+    },
     "ExampleAPIStorePayload1114E802": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "157ca2282541d1b3a27b13661ae3f75e267e24c53161017f0279ff0a8c20e91f.zip"
+          "S3Key": "316a595db02a3e2a2d02e3250ac7004a86ec064313dd61f50345fb079d3cd333.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-09-07T20:49:09.767Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2023-12-05T12:17:43.271Z\"}",
+            "SERVICE_DATA_BUCKET_NAME": {
+              "Ref": "ExampleServiceBucketFDFBB652"
+            },
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
@@ -577,110 +830,9 @@
         "Timeout": 25
       },
       "DependsOn": [
+        "ExampleAPIStorePayloadServiceRoleDefaultPolicy79822C62",
         "ExampleAPIStorePayloadServiceRoleB094D7CF"
       ]
-    },
-    "PrivateAPIAuthorizerServiceRoleEBFD5560": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              ]
-            ]
-          }
-        ]
-      }
-    },
-    "PrivateAPIAuthorizer2400616B": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "d4851594c211167082e004df0832206e28d72a4eec0a5bd7de423f707d47b569.zip"
-        },
-        "Environment": {
-          "Variables": {
-            "AUTH_VERIFIERS_JSON": "[]",
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
-          }
-        },
-        "Handler": "index.handler",
-        "MemorySize": 256,
-        "Role": {
-          "Fn::GetAtt": [
-            "PrivateAPIAuthorizerServiceRoleEBFD5560",
-            "Arn"
-          ]
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 5
-      },
-      "DependsOn": [
-        "PrivateAPIAuthorizerServiceRoleEBFD5560"
-      ]
-    },
-    "PrivateAPIAuthorizerMyTestStackExampleAPIPrivateApiRequestAuthorizerEBBBC25APermissionsB6AD73EF": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "PrivateAPIAuthorizer2400616B",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:eu-west-2:1234567890:",
-              {
-                "Ref": "ExampleAPI61CA833D"
-              },
-              "/authorizers/",
-              {
-                "Ref": "ExampleAPIPrivateApiRequestAuthorizerDB7A3947"
-              }
-            ]
-          ]
-        }
-      }
-    },
-    "ExampleServiceBucketFDFBB652": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": "test-api-service-data-bucket",
-        "VersioningConfiguration": {
-          "Status": "Enabled"
-        }
-      },
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete"
     },
     "ApiResponseModel7ED3C248": {
       "Type": "AWS::ApiGateway::Model",
@@ -712,6 +864,35 @@
             "statusCode",
             "type",
             "message"
+          ]
+        }
+      }
+    },
+    "ApiPayloadModel2BDE964E": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "ContentType": "application/json",
+        "Name": "ApiPayloadModel",
+        "RestApiId": {
+          "Ref": "ExampleAPI61CA833D"
+        },
+        "Schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "Basic API Payload",
+          "type": "object",
+          "properties": {
+            "operationId": {
+              "type": "integer",
+              "description": "The HTTP status code of the response"
+            },
+            "payload": {
+              "type": "object",
+              "description": "The data payload of the request"
+            }
+          },
+          "required": [
+            "operationId",
+            "payload"
           ]
         }
       }
