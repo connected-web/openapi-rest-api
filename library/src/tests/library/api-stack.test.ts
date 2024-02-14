@@ -19,7 +19,11 @@ const getTemplate = (): Template => {
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
       verifiers: []
-    }
+    },
+    stageName: '2024-02-14',
+    additionalCorsHeaders: [
+      'x-continuation-token'
+    ]
   })
   const template = Template.fromStack(stack)
   fs.writeFileSync('src/tests/template.json', JSON.stringify(template, null, 2))
@@ -48,7 +52,7 @@ describe('REST API using Harness as Test Bed', () => {
 
   it('Creates a AWS ApiGateway with the v1 stage as default', () => {
     template.hasResourceProperties('AWS::ApiGateway::Stage', {
-      StageName: 'v1'
+      StageName: '2024-02-14'
     })
   })
 
@@ -58,7 +62,7 @@ describe('REST API using Harness as Test Bed', () => {
         IntegrationResponses: [
           {
             ResponseParameters: {
-              'method.response.header.Access-Control-Allow-Headers': "'Authorization,content-type'",
+              'method.response.header.Access-Control-Allow-Headers': "'Authorization,content-type,x-continuation-token'",
               'method.response.header.Access-Control-Allow-Origin': "'*'",
               'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
               'method.response.header.Access-Control-Allow-Credentials': "'true'"

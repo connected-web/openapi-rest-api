@@ -10,7 +10,13 @@ export interface IdentityConfig {
   verifiers: OpenAPIVerifiers
 }
 
-export interface StackParameters { hostedZoneDomain: string, serviceDataBucketName: string, identity: IdentityConfig }
+export interface StackParameters {
+  hostedZoneDomain: string
+  serviceDataBucketName: string
+  identity: IdentityConfig
+  stageName: string
+  additionalCorsHeaders: string[]
+}
 
 export class HarnessAPIStack extends cdk.Stack {
   constructor (scope: Construct, id: string, props: cdk.StackProps, config: StackParameters) {
@@ -24,7 +30,9 @@ export class HarnessAPIStack extends cdk.Stack {
       Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
       SubDomain: 'harness-api',
       HostedZoneDomain: config.hostedZoneDomain,
-      Verifiers: config?.identity.verifiers ?? []
+      Verifiers: config?.identity.verifiers ?? [],
+      StageName: config.stageName,
+      AdditionalCORSHeaders: config.additionalCorsHeaders
     }, sharedResources)
 
     // Kick of dependency injection for shared models and model factory
