@@ -56,7 +56,7 @@
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain"
     },
-    "HarnessAPIDeploymentCB1DE8BD3e7aba75a7da063fb846f6b7afaf7023": {
+    "HarnessAPIDeploymentCB1DE8BD10393032ef6314a7f2f526869f824db7": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "Description": "Harness API - https://github.com/connected-web/openapi-rest-api",
@@ -72,16 +72,16 @@
         "HarnessAPIstatusCCD9C0CA"
       ]
     },
-    "HarnessAPIDeploymentStagev147A49639": {
+    "HarnessAPIDeploymentStage202402145415D88A": {
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
         "DeploymentId": {
-          "Ref": "HarnessAPIDeploymentCB1DE8BD3e7aba75a7da063fb846f6b7afaf7023"
+          "Ref": "HarnessAPIDeploymentCB1DE8BD10393032ef6314a7f2f526869f824db7"
         },
         "RestApiId": {
           "Ref": "HarnessAPIFE0E1CB0"
         },
-        "StageName": "v1"
+        "StageName": "2024-02-14"
       },
       "DependsOn": [
         "HarnessAPIAccount61F2DFEB"
@@ -97,7 +97,7 @@
           "IntegrationResponses": [
             {
               "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,content-type'",
+                "method.response.header.Access-Control-Allow-Headers": "'Authorization,content-type,x-continuation-token'",
                 "method.response.header.Access-Control-Allow-Origin": "'*'",
                 "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
                 "method.response.header.Access-Control-Allow-Credentials": "'true'"
@@ -157,7 +157,7 @@
           "IntegrationResponses": [
             {
               "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,content-type'",
+                "method.response.header.Access-Control-Allow-Headers": "'Authorization,content-type,x-continuation-token'",
                 "method.response.header.Access-Control-Allow-Origin": "'*'",
                 "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
                 "method.response.header.Access-Control-Allow-Credentials": "'true'"
@@ -214,7 +214,7 @@
               },
               "/",
               {
-                "Ref": "HarnessAPIDeploymentStagev147A49639"
+                "Ref": "HarnessAPIDeploymentStage202402145415D88A"
               },
               "/GET/status"
             ]
@@ -434,11 +434,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "80ffdd2e318d1dc257785c32243057b6126bf59b9c72d99eb6e08dc10763f2d1.zip"
+          "S3Key": "6724b42d655c2dbaed23f43728e1196bb5068a956a21b2366869f151748015dc.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T12:08:39.503Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T12:30:41.033Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
@@ -504,7 +504,7 @@
             },
             "/",
             {
-              "Ref": "HarnessAPIDeploymentStagev147A49639"
+              "Ref": "HarnessAPIDeploymentStage202402145415D88A"
             },
             "/"
           ]

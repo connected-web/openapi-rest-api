@@ -21,6 +21,8 @@ export interface OpenAPIRestAPIProps {
   Verifiers: Verifier[]
   AuthorizerPath?: string
   AuthorizerARN?: string
+  StageName?: string
+  AdditionalCORSHeaders?: string[]
 }
 
 export interface Verifier {
@@ -140,11 +142,13 @@ export default class OpenAPIRestAPI<R> extends Construct {
       })
     }
 
+    const additionalCorsHeaders = props.AdditionalCORSHeaders ?? []
+
     this.description = props.Description ?? 'No description provided'
     const api = new RestApi(this, id, {
       description: props.Description,
       deployOptions: {
-        stageName: 'v1'
+        stageName: props.StageName ?? 'v1'
       },
       defaultMethodOptions,
       defaultCorsPreflightOptions: {
@@ -153,7 +157,8 @@ export default class OpenAPIRestAPI<R> extends Construct {
         allowCredentials: true,
         allowHeaders: [
           'Authorization',
-          'content-type'
+          'content-type',
+          ...additionalCorsHeaders
         ]
       }
     })
