@@ -28,11 +28,3 @@ export class ApiPayload extends OpenAPIBasicModels {
     }) as IModel
   }
 }
-
-/**
- * You can match the internal data type of your request model to the type of your request payload.
- */
-export interface ApiPayloadType {
-  operationId: number
-  payload: any
-}

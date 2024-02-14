@@ -4,8 +4,8 @@ import { Construct } from 'constructs'
 import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
 
 import { ExampleResources } from './Resources'
-import { StatusEndpoint } from './endpoints/Status'
-import { ReceivePayloadEndpoint } from './endpoints/ReceivePayload'
+import { StatusEndpoint } from './endpoints/Status/metadata'
+import { ReceivePayloadEndpoint } from './endpoints/ReceivePayload/metadata'
 
 export interface IdentityConfig {
   verifiers: OpenAPIVerifiers
