@@ -51,4 +51,22 @@ describe('REST API using Harness as Test Bed', () => {
       StageName: 'v1'
     })
   })
+
+  it('Creates a AWS ApiGateway with default CORS options applied', () => {
+    template.hasResourceProperties('AWS::ApiGateway::Method', {
+      Integration: {
+        IntegrationResponses: [
+          {
+            ResponseParameters: {
+              'method.response.header.Access-Control-Allow-Headers': "'Authorization,content-type'",
+              'method.response.header.Access-Control-Allow-Origin': "'*'",
+              'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+              'method.response.header.Access-Control-Allow-Credentials': "'true'"
+            },
+            StatusCode: '204'
+          }
+        ]
+      }
+    })
+  })
 })
