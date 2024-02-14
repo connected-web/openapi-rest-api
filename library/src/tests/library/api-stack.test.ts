@@ -45,4 +45,10 @@ describe('REST API using Harness as Test Bed', () => {
       OperationName: 'getStatus'
     })
   })
+
+  it('Creates a AWS ApiGateway with the v1 stage as default', () => {
+    template.hasResourceProperties('AWS::ApiGateway::Stage', {
+      StageName: 'v1'
+    })
+  })
 })

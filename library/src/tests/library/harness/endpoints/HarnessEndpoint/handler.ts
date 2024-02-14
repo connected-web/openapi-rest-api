@@ -1,4 +1,7 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult
+} from 'aws-lambda/trigger/api-gateway-proxy'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -17,6 +20,7 @@ function lambdaResponse (statusCode: number, body: string = ''): APIGatewayProxy
   }
 }
 
+/* This handler is executed by AWS Lambda when the endpoint is invoked */
 export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   const statusInfo = process.env.STATUS_INFO ?? JSON.stringify({ message: 'No STATUS_INFO found on env' })
   return lambdaResponse(200, statusInfo)

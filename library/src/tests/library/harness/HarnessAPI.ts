@@ -4,7 +4,7 @@ import { Construct } from 'constructs'
 import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '../../../PackageIndex'
 
 import { HarnessResources } from './Resources'
-import { HarnessEndpoint } from './endpoints/HarnessEndpoint'
+import { HarnessEndpoint } from './endpoints/HarnessEndpoint/metadata'
 
 export interface IdentityConfig {
   verifiers: OpenAPIVerifiers
