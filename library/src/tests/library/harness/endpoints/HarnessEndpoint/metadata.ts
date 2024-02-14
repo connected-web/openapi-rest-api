@@ -1,20 +1,10 @@
-import {
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult
-} from 'aws-lambda/trigger/api-gateway-proxy'
 
 import { Construct } from 'constructs'
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { MethodResponse, IModel } from 'aws-cdk-lib/aws-apigateway'
 
-import { OpenAPIRouteMetadata, OpenAPIHelpers, OpenAPIEnums, OpenAPIBasicModels } from '../../../../PackageIndex'
-import { HarnessResources } from '../Resources'
-
-/* This handler is executed by AWS Lambda when the endpoint is invoked */
-export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
-  const statusInfo = process.env.STATUS_INFO ?? JSON.stringify({ message: 'No STATUS_INFO found on env' })
-  return OpenAPIHelpers.lambdaResponse(OpenAPIEnums.httpStatusCodes.success, statusInfo)
-}
+import { OpenAPIRouteMetadata, OpenAPIBasicModels } from '../../../../../PackageIndex'
+import { HarnessResources } from '../../Resources'
 
 /* This section is for route metadata used by CDK to create the stack that will host your endpoint */
 export class HarnessEndpoint extends OpenAPIRouteMetadata<HarnessResources> {

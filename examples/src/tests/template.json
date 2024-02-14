@@ -705,7 +705,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-12-05T12:20:49.166Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T11:47:21.018Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
@@ -811,7 +811,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2023-12-05T12:20:52.823Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T11:47:29.932Z\"}",
             "SERVICE_DATA_BUCKET_NAME": {
               "Ref": "ExampleServiceBucketFDFBB652"
             },
