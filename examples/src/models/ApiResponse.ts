@@ -33,12 +33,3 @@ export class ApiResponse extends OpenAPIBasicModels {
     }) as IModel
   }
 }
-
-/**
- * You can match the internal data type of your response model to the type of your response payload.
- */
-export interface ApiResponseType {
-  statusCode: number
-  type: string
-  message: string
-}

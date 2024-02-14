@@ -701,11 +701,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "7d33094bbf13d31a5e6930ccf43bb6d75f43c73b31fe8b217dbca1e8bf476343.zip"
+          "S3Key": "1c044df2b01d3d87f2610187fa5204c31ea46aadda313a6f72fb0ba093bdd5dc.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T11:47:21.018Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T12:18:43.051Z\"}",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
           }
         },
@@ -807,11 +807,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "316a595db02a3e2a2d02e3250ac7004a86ec064313dd61f50345fb079d3cd333.zip"
+          "S3Key": "fbbf19848a3288b180ed3b259ad98315be82f94aa73ccbbdc2908236f02720e7.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T11:47:29.932Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2024-02-14T12:18:43.549Z\"}",
             "SERVICE_DATA_BUCKET_NAME": {
               "Ref": "ExampleServiceBucketFDFBB652"
             },

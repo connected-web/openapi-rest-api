@@ -1,21 +1,11 @@
-import {
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult
-} from 'aws-lambda/trigger/api-gateway-proxy'
-
 import { Construct } from 'constructs'
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { MethodResponse } from 'aws-cdk-lib/aws-apigateway'
 
-import { OpenAPIRouteMetadata, OpenAPIHelpers, OpenAPIEnums } from '@connected-web/openapi-rest-api'
-import { ExampleResources } from '../Resources'
-import { ApiResponse } from '../models/ApiResponse'
-
-/* This handler is executed by AWS Lambda when the endpoint is invoked */
-export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
-  const statusInfo = process.env.STATUS_INFO ?? JSON.stringify({ message: 'No STATUS_INFO found on env' })
-  return OpenAPIHelpers.lambdaResponse(OpenAPIEnums.httpStatusCodes.success, statusInfo)
-}
+import { OpenAPIRouteMetadata } from '@connected-web/openapi-rest-api'
+import { ExampleResources } from '../../Resources'
+import { ApiResponse } from '../../models/ApiResponse'
+import path from 'path'
 
 /* This section is for route metadata used by CDK to create the stack that will host your endpoint */
 export class StatusEndpoint extends OpenAPIRouteMetadata<ExampleResources> {
@@ -33,7 +23,7 @@ export class StatusEndpoint extends OpenAPIRouteMetadata<ExampleResources> {
   }
 
   get routeEntryPoint (): string {
-    return __filename
+    return path.join(__dirname, 'handler.ts')
   }
 
   get lambdaConfig (): NodejsFunctionProps {
