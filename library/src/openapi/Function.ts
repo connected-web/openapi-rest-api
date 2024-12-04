@@ -39,13 +39,13 @@ export default class OpenAPIFunction {
 
   /**
    * Apply default NodejsFunctionProps to the global class used when creating a new NodejsFunction.
-   * 
+   *
    * Alternatively, you can supply additionalProps when calling createNodeJSLambda to override these defaults.
-   * 
-   * @param props 
+   *
+   * @param props
    * @returns NodejsFunctionProps
    */
-  static applyDefaultProps(props: NodejsFunctionProps): NodejsFunctionProps {
+  static applyDefaultProps (props: NodejsFunctionProps): NodejsFunctionProps {
     const newProps = Object.assign({}, OpenAPIFunction.defaultProps, props)
     OpenAPIFunction.defaultProps = newProps
     return newProps
@@ -88,7 +88,7 @@ export default class OpenAPIFunction {
   createNodeJSLambda (scope: Construct, routeEntryPoint: string, additionalProps?: NodejsFunctionProps): NodejsFunction {
     const { operationId: operationName } = this
 
-    const finalProps = Object.assign({},  OpenAPIFunction.defaultProps, { entry: routeEntryPoint }, additionalProps ?? {})
+    const finalProps = Object.assign({}, OpenAPIFunction.defaultProps, { entry: routeEntryPoint }, additionalProps ?? {})
     const lambda = new NodejsFunction(scope, uppercaseFirstLetter(operationName), finalProps)
     this._lambda = lambda
     return lambda
