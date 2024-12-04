@@ -26,6 +26,31 @@ export default class OpenAPIFunction {
   private readonly _requestParameters: { [param: string]: boolean }
   private _lambda?: Function
 
+  static defaultProps: NodejsFunctionProps = {
+    memorySize: 512,
+    timeout: Duration.seconds(25),
+    runtime: Runtime.NODEJS_22_X,
+    handler: 'handler',
+    bundling: {
+      minify: true,
+      nodeModules: ['aws-sdk']
+    }
+  }
+
+  /**
+   * Apply default NodejsFunctionProps to the global class used when creating a new NodejsFunction.
+   *
+   * Alternatively, you can supply additionalProps when calling createNodeJSLambda to override these defaults.
+   *
+   * @param props
+   * @returns NodejsFunctionProps
+   */
+  static applyDefaultProps (props: NodejsFunctionProps): NodejsFunctionProps {
+    const newProps = Object.assign({}, OpenAPIFunction.defaultProps, props)
+    OpenAPIFunction.defaultProps = newProps
+    return newProps
+  }
+
   /**
    * OpenAPI Spec : operationId
    * The id MUST be unique among all operations described in the API.
@@ -62,19 +87,8 @@ export default class OpenAPIFunction {
    */
   createNodeJSLambda (scope: Construct, routeEntryPoint: string, additionalProps?: NodejsFunctionProps): NodejsFunction {
     const { operationId: operationName } = this
-    const defaultProps = {
-      memorySize: 256,
-      timeout: Duration.seconds(25),
-      runtime: Runtime.NODEJS_18_X,
-      handler: 'handler',
-      entry: routeEntryPoint,
-      bundling: {
-        minify: true,
-        nodeModules: ['aws-sdk']
-      }
-    }
 
-    const finalProps = Object.assign({}, defaultProps, additionalProps ?? {})
+    const finalProps = Object.assign({}, OpenAPIFunction.defaultProps, { entry: routeEntryPoint }, additionalProps ?? {})
     const lambda = new NodejsFunction(scope, uppercaseFirstLetter(operationName), finalProps)
     this._lambda = lambda
     return lambda

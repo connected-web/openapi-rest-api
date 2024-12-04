@@ -438,19 +438,19 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2024-12-04T16:13:34.361Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2024-12-04T16:13:39.025Z\"}"
           }
         },
         "Handler": "index.handler",
-        "MemorySize": 512,
+        "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
             "HarnessAPIGetStatusServiceRoleD0D4437D",
             "Arn"
           ]
         },
-        "Runtime": "nodejs22.x",
-        "Timeout": 25
+        "Runtime": "nodejs20.x",
+        "Timeout": 30
       },
       "DependsOn": [
         "HarnessAPIGetStatusServiceRoleDefaultPolicyDCACFB79",

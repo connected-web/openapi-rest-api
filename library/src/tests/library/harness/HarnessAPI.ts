@@ -1,7 +1,8 @@
 import * as cdk from 'aws-cdk-lib'
+import { NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 
 import { Construct } from 'constructs'
-import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '../../../PackageIndex'
+import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels, OpenAPIFunction } from '../../../PackageIndex'
 
 import { HarnessResources } from './Resources'
 import { HarnessEndpoint } from './endpoints/HarnessEndpoint/metadata'
@@ -16,11 +17,17 @@ export interface StackParameters {
   identity: IdentityConfig
   stageName: string
   additionalCorsHeaders: string[]
+  customLambdaProps?: NodejsFunctionProps
 }
 
 export class HarnessAPIStack extends cdk.Stack {
   constructor (scope: Construct, id: string, props: cdk.StackProps, config: StackParameters) {
     super(scope, id, props)
+
+    // Configure default Lambda properties
+    if (config.customLambdaProps !== undefined) {
+      OpenAPIFunction.applyDefaultProps(config.customLambdaProps)
+    }
 
     // Create shared resources
     const sharedResources = new HarnessResources(scope, this)

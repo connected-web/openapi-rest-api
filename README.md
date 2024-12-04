@@ -45,9 +45,11 @@ Example: [./ExampleAPI.ts](./examples/src/ExampleAPI.ts)
 
 ```typescript
 import * as cdk from 'aws-cdk-lib'
+import { Duration } from 'aws-cdk-lib'
+import { Function, Runtime } from 'aws-cdk-lib/aws-lambda'
 
 import { Construct } from 'constructs'
-import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
+import { OpenAPIRestAPI, OpenAPIFunction, OpenAPIVerifiers, OpenAPIBasicModels } from '@connected-web/openapi-rest-api'
 
 import { ExampleResources } from './Resources'
 import { StatusEndpoint } from './endpoints/Status'
@@ -62,6 +64,13 @@ export interface StackParameters { hostedZoneDomain: string, serviceDataBucketNa
 export class ExampleAPIStack extends cdk.Stack {
   constructor (scope: Construct, id: string, props: cdk.StackProps, config: StackParameters) {
     super(scope, id, props)
+
+    // Configure custom defaults for all lambdas
+    OpenAPIFunction.applyDefaultProps({
+      runtime: Runtime.NODEJS_LATEST,
+      timeout: Duration.seconds(10),
+      memorySize: 768
+    })
 
     // Create shared resources
     const sharedResources = new ExampleResources(scope, this)
@@ -82,10 +91,10 @@ export class ExampleAPIStack extends cdk.Stack {
 
     // Add endpoints to API
     apiGateway
-      .addEndpoints([
-        new StatusEndpoint(),
-        new ReceivePayloadEndpoint()
-      ])
+      .addEndpoints({
+        'GET /status': new StatusEndpoint(),
+        'PUT /receive-payload/{pathParam}': new ReceivePayloadEndpoint(sharedResources)
+      })
       .report()
   }
 }
