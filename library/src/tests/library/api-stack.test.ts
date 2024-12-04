@@ -66,7 +66,6 @@ function getTemplateWithCustomLambdaProps (): Template {
   return template
 }
 
-
 describe('REST API using Harness as Test Bed', () => {
   let template: Template
 
