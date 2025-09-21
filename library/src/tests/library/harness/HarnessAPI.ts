@@ -2,13 +2,14 @@ import * as cdk from 'aws-cdk-lib'
 import { NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
 
 import { Construct } from 'constructs'
-import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIBasicModels, OpenAPIFunction } from '../../../PackageIndex'
+import { OpenAPIRestAPI, OpenAPIVerifiers, OpenAPIHeaderAuthorizerProps, OpenAPIBasicModels, OpenAPIFunction } from '../../../PackageIndex'
 
 import { HarnessResources } from './Resources'
 import { HarnessEndpoint } from './endpoints/HarnessEndpoint/metadata'
 
 export interface IdentityConfig {
   Verifiers: OpenAPIVerifiers
+  HeaderAuthorizer?: OpenAPIHeaderAuthorizerProps
 }
 
 export interface StackParameters {
@@ -37,7 +38,7 @@ export class HarnessAPIStack extends cdk.Stack {
       Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
       SubDomain: 'harness-api',
       HostedZoneDomain: config.hostedZoneDomain,
-      Verifiers: config?.identity.Verifiers ?? [],
+      Verifiers: config?.identity?.Verifiers ?? [],
       StageName: config.stageName,
       AdditionalCORSHeaders: config.additionalCorsHeaders
     }, sharedResources)

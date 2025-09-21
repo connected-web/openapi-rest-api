@@ -32,6 +32,40 @@ function getTemplate (): Template {
   return template
 }
 
+function getTemplateWithCustomHeaderAuthorizerProps (): Template {
+  const app = new cdk.App()
+  const stack = new HarnessAPIStack(app, 'MyTestStack', {
+    env: {
+      account: '1234567890',
+      region: 'eu-west-2'
+    }
+  },
+  {
+    hostedZoneDomain: 'dummy.domain.name',
+    serviceDataBucketName: 'test-stack-stub-bucket-name',
+    identity: {
+      Verifiers: [],
+      HeaderAuthorizer: {
+        requiredHeadersWithAllowedValues: {
+          'x-api-key': ['1234567890']
+        },
+        requiredHeadersRegexValues: {
+          'x-request-id': '^[a-f0-9]{32}$'
+        },
+        disallowedHeaders: ['x-disallowed-header'],
+        disallowedHeaderRegexes: ['^x-regex-.*$']
+      }
+    },
+    stageName: '2024-02-14',
+    additionalCorsHeaders: [
+      'x-continuation-token'
+    ]
+  })
+  const template = Template.fromStack(stack)
+  fs.writeFileSync('src/tests/template-with-custom-header-authorizer.json', JSON.stringify(template, null, 2))
+  return template
+}
+
 function getTemplateWithCustomLambdaProps (): Template {
   const app = new cdk.App()
   const stack = new HarnessAPIStack(app, 'MyTestStack', {
@@ -116,6 +150,21 @@ describe('REST API using Harness as Test Bed', () => {
       MemorySize: 512,
       Runtime: 'nodejs22.x',
       Timeout: 25
+    })
+  })
+})
+
+describe('REST API using Harness as Test Bed with custom Header Authorizer props', () => {
+  let template: Template
+
+  beforeAll(() => {
+    template = getTemplateWithCustomHeaderAuthorizerProps()
+  })
+
+  it('Creates an AWS ApiGateway RestApi with the correct title and description', () => {
+    template.hasResourceProperties('AWS::ApiGateway::RestApi', {
+      Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
+      Name: 'Harness API'
     })
   })
 })

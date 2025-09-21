@@ -29,7 +29,7 @@ export default class OpenAPIFunction {
   static defaultProps: NodejsFunctionProps = {
     memorySize: 512,
     timeout: Duration.seconds(25),
-    runtime: Runtime.NODEJS_22_X,
+    runtime: Runtime.NODEJS_LATEST,
     handler: 'handler',
     bundling: {
       minify: true,

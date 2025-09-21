@@ -1,5 +1,5 @@
 import { APIGatewayAuthorizerResult, APIGatewayRequestAuthorizerEvent, APIGatewayRequestAuthorizerEventHeaders } from 'aws-lambda'
-import { HeaderAuthorizerProps } from './RestAPI'
+import { OpenAPIHeaderAuthorizerProps } from './RestAPI'
 import { AuthorizerContext } from './AWSCognitoAuthorizer'
 
 const {
@@ -9,7 +9,7 @@ const {
   DISALLOWED_HEADER_REGEXES_JSON
 } = process.env
 
-const headerAuthorizerSettings: HeaderAuthorizerProps = {
+const headerAuthorizerSettings: OpenAPIHeaderAuthorizerProps = {
   requiredHeadersWithAllowedValues: REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON !== undefined ? JSON.parse(REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON) : undefined,
   requiredHeadersRegexValues: REQUIRED_HEADERS_REGEX_VALUES_JSON !== undefined ? JSON.parse(REQUIRED_HEADERS_REGEX_VALUES_JSON) : {},
   disallowedHeaders: DISALLOWED_HEADERS_JSON !== undefined ? JSON.parse(DISALLOWED_HEADERS_JSON) : undefined,
@@ -22,7 +22,7 @@ export async function handler (event: APIGatewayRequestAuthorizerEvent): Promise
   return await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
 }
 
-async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAuthorizerEventHeaders, headerAuthorizerSettings: HeaderAuthorizerProps): Promise<APIGatewayAuthorizerResult> {
+async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAuthorizerEventHeaders, headerAuthorizerSettings: OpenAPIHeaderAuthorizerProps): Promise<APIGatewayAuthorizerResult> {
   const policies: APIGatewayAuthorizerResult[] = []
 
   if (headerAuthorizerSettings.requiredHeadersWithAllowedValues !== undefined) {

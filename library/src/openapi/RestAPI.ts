@@ -14,7 +14,7 @@ import path from 'path'
 import { OpenAPIRouteMetadata } from './Routes'
 import fs from 'node:fs'
 
-export interface HeaderAuthorizerProps {
+export interface OpenAPIHeaderAuthorizerProps {
   requiredHeadersWithAllowedValues?: { [header: string]: string[] }
   requiredHeadersRegexValues?: { [header: string]: string }
   disallowedHeaders?: string[]
@@ -28,7 +28,7 @@ export interface OpenAPIRestAPIProps {
   Verifiers: Verifier[]
   AuthorizerPath?: string
   AuthorizerARN?: string
-  HeaderAuthorizer?: HeaderAuthorizerProps
+  HeaderAuthorizer?: OpenAPIHeaderAuthorizerProps
   StageName?: string
   AdditionalCORSHeaders?: string[]
 }
