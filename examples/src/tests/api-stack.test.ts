@@ -4,7 +4,7 @@ import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
 import { ExampleAPIStack } from '../ExampleAPI'
 
-import fs from 'node:fs'
+import fs from 'fs'
 
 const getTemplate = (): Template => {
   const app = new cdk.App()
@@ -18,7 +18,7 @@ const getTemplate = (): Template => {
     hostedZoneDomain: 'dummy.domain.name',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
-      verifiers: []
+      Verifiers: []
     }
   })
   const template = Template.fromStack(stack)

@@ -1,7 +1,7 @@
 import OpenAPIBasicModels from './openapi/BasicModels'
 import OpenAPIEndpoint from './openapi/Endpoint'
 import OpenAPIFunction from './openapi/Function'
-import OpenAPIRestAPI, { Verifier } from './openapi/RestAPI'
+import OpenAPIRestAPI, { OpenAPIHeaderAuthorizerProps, Verifier } from './openapi/RestAPI'
 import { OpenAPIRouteMetadata } from './openapi/Routes'
 import { OpenAPIModelFactory } from './openapi/ModelFactory'
 import { corsHeaders, httpStatusCodes, lambdaResponse } from './openapi/Response'
@@ -23,6 +23,7 @@ export const OpenAPIOperations = {
 }
 
 export {
+  OpenAPIHeaderAuthorizerProps,
   OpenAPIBasicModels,
   OpenAPIEndpoint,
   OpenAPIFunction,

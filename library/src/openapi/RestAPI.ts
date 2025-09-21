@@ -12,7 +12,14 @@ import { generateOperationId } from './Operations'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import path from 'path'
 import { OpenAPIRouteMetadata } from './Routes'
-import fs from 'node:fs'
+import fs from 'fs'
+
+export interface OpenAPIHeaderAuthorizerProps {
+  requiredHeadersWithAllowedValues?: { [header: string]: string[] }
+  requiredHeadersRegexValues?: { [header: string]: string }
+  disallowedHeaders?: string[]
+  disallowedHeaderRegexes?: string[]
+}
 
 export interface OpenAPIRestAPIProps {
   Description: string
@@ -21,6 +28,7 @@ export interface OpenAPIRestAPIProps {
   Verifiers: Verifier[]
   AuthorizerPath?: string
   AuthorizerARN?: string
+  HeaderAuthorizer?: OpenAPIHeaderAuthorizerProps
   StageName?: string
   AdditionalCORSHeaders?: string[]
 }
@@ -108,20 +116,24 @@ export default class OpenAPIRestAPI<R> extends Construct {
       throw new Error('OpenAPIRestAPI: AuthorizerARN and configurable Verifiers are mutually exclusive; please exclude Verifiers from your config or switch to the default authorizer by clearing the AuthorizerARN property.')
     }
 
+    if (props.Verifiers.length > 0 && props.HeaderAuthorizer !== undefined) {
+      throw new Error('OpenAPIRestAPI: HeaderAuthorizer and configurable Verifiers are mutually exclusive; please exclude Verifiers from your config or switch to the header authorizer by clearing the HeaderAuthorizer property.')
+    }
+
     let authLambda: IFunction | undefined
     if (props.AuthorizerARN !== undefined) {
       authLambda = NodejsFunction.fromFunctionArn(scope, 'ExistingAPIAuthorizer', props.AuthorizerARN)
     } else if (props.Verifiers.length > 0) {
-      const tsPath = path.join(__dirname, props.AuthorizerPath ?? './DefaultAuthorizer.ts')
+      const tsPath = path.join(__dirname, props.AuthorizerPath ?? './AWSCognitoAuthorizer.ts')
       const entryFilePath = fs.existsSync(tsPath) ? tsPath : tsPath.replace('.ts', '.js')
       if (!fs.existsSync(entryFilePath)) {
         throw new Error(`OpenAPIRestAPI: Unable to find authorizer file at ${entryFilePath}`)
       }
 
       authLambda = new NodejsFunction(scope, 'PrivateAPIAuthorizer', {
-        memorySize: 256,
+        memorySize: 768,
         timeout: Duration.seconds(5),
-        runtime: Runtime.NODEJS_18_X,
+        runtime: Runtime.NODEJS_LATEST,
         handler: 'handler',
         entry: entryFilePath,
         bundling: {
@@ -130,6 +142,30 @@ export default class OpenAPIRestAPI<R> extends Construct {
         },
         environment: {
           AUTH_VERIFIERS_JSON: JSON.stringify(props.Verifiers)
+        }
+      })
+    } else if (props.HeaderAuthorizer !== undefined) {
+      const tsPath = path.join(__dirname, props.AuthorizerPath ?? './HeaderAuthorizer.ts')
+      const entryFilePath = fs.existsSync(tsPath) ? tsPath : tsPath.replace('.ts', '.js')
+      if (!fs.existsSync(entryFilePath)) {
+        throw new Error(`OpenAPIRestAPI: Unable to find authorizer file at ${entryFilePath}`)
+      }
+
+      authLambda = new NodejsFunction(scope, 'PrivateHeaderAPIAuthorizer', {
+        memorySize: 768,
+        timeout: Duration.seconds(5),
+        runtime: Runtime.NODEJS_LATEST,
+        handler: 'handler',
+        entry: entryFilePath,
+        bundling: {
+          minify: true,
+          externalModules: ['aws-sdk']
+        },
+        environment: {
+          REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON: JSON.stringify(props.HeaderAuthorizer.requiredHeadersWithAllowedValues ?? {}),
+          REQUIRED_HEADERS_REGEX_VALUES_JSON: JSON.stringify(props.HeaderAuthorizer.requiredHeadersRegexValues ?? {}),
+          DISALLOWED_HEADERS_JSON: JSON.stringify(props.HeaderAuthorizer.disallowedHeaders ?? []),
+          DISALLOWED_HEADER_REGEXES_JSON: JSON.stringify(props.HeaderAuthorizer.disallowedHeaderRegexes ?? [])
         }
       })
     }

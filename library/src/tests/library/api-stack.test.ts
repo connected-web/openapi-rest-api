@@ -6,7 +6,7 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { Template } from 'aws-cdk-lib/assertions'
 import { HarnessAPIStack } from './harness/HarnessAPI'
 
-import fs from 'node:fs'
+import fs from 'fs'
 
 function getTemplate (): Template {
   const app = new cdk.App()
@@ -20,7 +20,7 @@ function getTemplate (): Template {
     hostedZoneDomain: 'dummy.domain.name',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
-      verifiers: []
+      Verifiers: []
     },
     stageName: '2024-02-14',
     additionalCorsHeaders: [
@@ -29,6 +29,40 @@ function getTemplate (): Template {
   })
   const template = Template.fromStack(stack)
   fs.writeFileSync('src/tests/template.json', JSON.stringify(template, null, 2))
+  return template
+}
+
+function getTemplateWithCustomHeaderAuthorizerProps (): Template {
+  const app = new cdk.App()
+  const stack = new HarnessAPIStack(app, 'MyTestStack', {
+    env: {
+      account: '1234567890',
+      region: 'eu-west-2'
+    }
+  },
+  {
+    hostedZoneDomain: 'dummy.domain.name',
+    serviceDataBucketName: 'test-stack-stub-bucket-name',
+    identity: {
+      Verifiers: [],
+      HeaderAuthorizer: {
+        requiredHeadersWithAllowedValues: {
+          'x-api-key': ['1234567890']
+        },
+        requiredHeadersRegexValues: {
+          'x-request-id': '^[a-f0-9]{32}$'
+        },
+        disallowedHeaders: ['x-disallowed-header'],
+        disallowedHeaderRegexes: ['^x-regex-.*$']
+      }
+    },
+    stageName: '2024-02-14',
+    additionalCorsHeaders: [
+      'x-continuation-token'
+    ]
+  })
+  const template = Template.fromStack(stack)
+  fs.writeFileSync('src/tests/template-with-custom-header-authorizer.json', JSON.stringify(template, null, 2))
   return template
 }
 
@@ -44,7 +78,7 @@ function getTemplateWithCustomLambdaProps (): Template {
     hostedZoneDomain: 'dummy.domain.name',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
-      verifiers: []
+      Verifiers: []
     },
     stageName: '2024-02-14',
     additionalCorsHeaders: [
@@ -53,7 +87,7 @@ function getTemplateWithCustomLambdaProps (): Template {
     customLambdaProps: {
       memorySize: 1024,
       timeout: Duration.seconds(30),
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_LATEST,
       handler: 'index.handler',
       bundling: {
         minify: true,
@@ -120,6 +154,36 @@ describe('REST API using Harness as Test Bed', () => {
   })
 })
 
+describe('REST API using Harness as Test Bed with custom Header Authorizer props', () => {
+  let template: Template
+
+  beforeAll(() => {
+    template = getTemplateWithCustomHeaderAuthorizerProps()
+  })
+
+  it('Creates PrivateHeaderAPIAuthorizer Lambda with expected environment variables', () => {
+    template.hasResourceProperties('AWS::Lambda::Function', {
+      Environment: {
+        Variables: {
+          REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON: '{"x-api-key":["1234567890"]}',
+          REQUIRED_HEADERS_REGEX_VALUES_JSON: '{"x-request-id":"^[a-f0-9]{32}$"}',
+          DISALLOWED_HEADERS_JSON: '["x-disallowed-header"]',
+          DISALLOWED_HEADER_REGEXES_JSON: '["^x-regex-.*$"]'
+        }
+      }
+    })
+  })
+
+  it('Creates PrivateHeaderAPIAuthorizer Lambda with default runtime/handler/memory', () => {
+    template.hasResourceProperties('AWS::Lambda::Function', {
+      Handler: 'index.handler',
+      Runtime: 'nodejs22.x',
+      MemorySize: 768,
+      Timeout: 5
+    })
+  })
+})
+
 describe('REST API using Harness as Test Bed with custom Lambda props', () => {
   let template: Template
 
@@ -131,7 +195,7 @@ describe('REST API using Harness as Test Bed with custom Lambda props', () => {
     template.hasResourceProperties('AWS::Lambda::Function', {
       Handler: 'index.handler',
       MemorySize: 1024,
-      Runtime: 'nodejs20.x',
+      Runtime: 'nodejs22.x',
       Timeout: 30
     })
   })
