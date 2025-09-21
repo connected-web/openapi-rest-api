@@ -16,8 +16,8 @@ import fs from 'node:fs'
 
 export interface HeaderAuthorizerProps {
   requiredHeadersWithAllowedValues?: { [header: string]: string[] }
-  requiredHeadersRegexValues?: { [header: string]: string },
-  disallowedHeaders?: string[],
+  requiredHeadersRegexValues?: { [header: string]: string }
+  disallowedHeaders?: string[]
   disallowedHeaderRegexes?: string[]
 }
 

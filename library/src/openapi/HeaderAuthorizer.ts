@@ -1,6 +1,4 @@
-import { APIGatewayAuthorizerResult, APIGatewayAuthorizerResultContext, APIGatewayRequestAuthorizerEvent, APIGatewayRequestAuthorizerEventHeaders } from 'aws-lambda'
-import { CognitoJwtVerifier } from 'aws-jwt-verify'
-import axios, { AxiosInstance } from 'axios'
+import { APIGatewayAuthorizerResult, APIGatewayRequestAuthorizerEvent, APIGatewayRequestAuthorizerEventHeaders } from 'aws-lambda'
 import { HeaderAuthorizerProps } from './RestAPI'
 import { AuthorizerContext } from './AWSCognitoAuthorizer'
 
@@ -94,16 +92,17 @@ async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAu
     console.log('Checking disallowedHeaderRegexes')
     const disallowedHeaderRegexes = headerAuthorizerSettings.disallowedHeaderRegexes
     let anyMatch = false
-    for (const header in disallowedHeaderRegexes) {
-      const regexString = disallowedHeaderRegexes[header]
+    disallowedHeaderRegexes.forEach((regexString) => {
       const regex = new RegExp(regexString)
-      const headerValue = availableHeaders[header] ?? availableHeaders[header.toLowerCase()] ?? ''
-      if (regex.test(headerValue)) {
-        anyMatch = true
-        console.log(`Disallowed header ${header} with value ${headerValue} matches regex`, { regex: regexString })
-        break
+      for (const header in availableHeaders) {
+        const headerValue = availableHeaders[header] ?? availableHeaders[header.toLowerCase()] ?? ''
+        if (regex.test(headerValue)) {
+          anyMatch = true
+          console.log(`Header ${header} with value ${headerValue} matches disallowed regex`, { regex: regexString })
+          break
+        }
       }
-    }
+    })
     if (anyMatch) {
       policies.push(buildPolicy('Deny', 'disallowed-header-regexes', { authorizerError: 'Disallowed header regexes matched' }))
     } else {
@@ -112,7 +111,7 @@ async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAu
     }
   }
 
-  // Return the first Allow policy if any, otherwise return the first Deny policy or a default Deny 
+  // Return the first Allow policy if any, otherwise return the first Deny policy or a default Deny
   const validPolicy = policies.find(policy => policy.policyDocument.Statement[0].Effect === 'Allow')
   if (validPolicy !== undefined) {
     return validPolicy
