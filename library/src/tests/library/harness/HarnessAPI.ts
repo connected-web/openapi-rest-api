@@ -8,7 +8,7 @@ import { HarnessResources } from './Resources'
 import { HarnessEndpoint } from './endpoints/HarnessEndpoint/metadata'
 
 export interface IdentityConfig {
-  verifiers: OpenAPIVerifiers
+  Verifiers: OpenAPIVerifiers
 }
 
 export interface StackParameters {
@@ -37,7 +37,7 @@ export class HarnessAPIStack extends cdk.Stack {
       Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
       SubDomain: 'harness-api',
       HostedZoneDomain: config.hostedZoneDomain,
-      Verifiers: config?.identity.verifiers ?? [],
+      Verifiers: config?.identity.Verifiers ?? [],
       StageName: config.stageName,
       AdditionalCORSHeaders: config.additionalCorsHeaders
     }, sharedResources)

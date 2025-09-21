@@ -34,7 +34,42 @@ The CDK stack is used to create the API Gateway, and to create the endpoints. Th
 - `Description` - A description of the API
 - `SubDomain` - The subdomain that will be used to host the API
 - `HostedZoneDomain` - The domain that will be used to host the API
-- `Verifiers` - An array of verifiers that will be used to verify requests
+- `Verifiers` - An array of verifiers that will be used to verify requests using Cognito User Pool clients
+- `AuthorizerARN` - (Optional) An ARN of a pre-existing authorizer lambda
+- `AuthorizerPath` - (Optional) The path to a customer authorizer lambda function file
+- `HeaderAuthorizer` - (Optional) Configuration for a header-based authorizer
+- `StageName` - (Optional) The stage name that will be used to host the API (default: 'v1')
+- `AdditionalCORSHeaders` - (Optional) An array of additional CORS headers that will be added to the API (default: ['Authorization', 'content-type'])
+
+#### Example Verifiers
+
+The authorizer supports multiple Cognito User Pool clients to allow for different environments, or different applications to use the same API. Each verifier requires the following parameters:
+
+```json
+"Verifiers": [{
+  "name": "Users Dev",
+  "userPoolId": "eu-west-2_VBRbzaly6",
+  "tokenUse": "access",
+  "clientId": "abcd1234ghij5678klmn9012",
+  "oauthUrl": "https://connected-web.auth.eu-west-2.amazoncognito.com"
+}]
+```
+
+#### Example HeaderAuthorizer
+
+```json
+"HeaderAuthorizer": {
+  "requiredHeadersWithAllowedValues": {
+    "x-api-key": ["my-secret-api-key"]
+  },
+  "requiredHeadersRegexValues": {
+    "x-request-id": ["^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"] // UUID v4
+  },
+  "disallowedHeaders": ["x-bad-header"],
+  "disallowedHeaderRegexes": ["^x-disallowed-.*$"]
+}
+```
+
 
 The `OpenAPIRestAPI<*>` interface also supports the following methods:
 
@@ -252,7 +287,7 @@ All verifiers are checked in order, and the first verifier to return a valid res
 
 ```json
 {
-  "verifiers": [{
+  "Verifiers": [{
     "name": "Users Dev",
     "userPoolId": "eu-west-2_VBRbzaly6",
     "tokenUse": "access",

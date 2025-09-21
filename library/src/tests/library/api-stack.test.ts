@@ -20,7 +20,7 @@ function getTemplate (): Template {
     hostedZoneDomain: 'dummy.domain.name',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
-      verifiers: []
+      Verifiers: []
     },
     stageName: '2024-02-14',
     additionalCorsHeaders: [
@@ -44,7 +44,7 @@ function getTemplateWithCustomLambdaProps (): Template {
     hostedZoneDomain: 'dummy.domain.name',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
-      verifiers: []
+      Verifiers: []
     },
     stageName: '2024-02-14',
     additionalCorsHeaders: [
@@ -53,7 +53,7 @@ function getTemplateWithCustomLambdaProps (): Template {
     customLambdaProps: {
       memorySize: 1024,
       timeout: Duration.seconds(30),
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_LATEST,
       handler: 'index.handler',
       bundling: {
         minify: true,

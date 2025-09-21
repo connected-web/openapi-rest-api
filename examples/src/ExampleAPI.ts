@@ -8,7 +8,7 @@ import { StatusEndpoint } from './endpoints/Status/metadata'
 import { ReceivePayloadEndpoint } from './endpoints/ReceivePayload/metadata'
 
 export interface IdentityConfig {
-  verifiers: OpenAPIVerifiers
+  Verifiers: OpenAPIVerifiers
 }
 
 export interface StackParameters { hostedZoneDomain: string, serviceDataBucketName: string, identity: IdentityConfig }
@@ -25,7 +25,7 @@ export class ExampleAPIStack extends cdk.Stack {
       Description: 'Example API - https://github.com/connected-web/openapi-rest-api',
       SubDomain: 'example-api',
       HostedZoneDomain: config.hostedZoneDomain,
-      Verifiers: config?.identity.verifiers ?? []
+      Verifiers: config?.identity.Verifiers ?? []
     }, sharedResources)
 
     // Kick of dependency injection for shared models and model factory

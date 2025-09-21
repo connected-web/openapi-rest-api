@@ -18,7 +18,7 @@ const getTemplate = (): Template => {
     hostedZoneDomain: 'dummy.domain.name',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
-      verifiers: []
+      Verifiers: []
     }
   })
   const template = Template.fromStack(stack)
