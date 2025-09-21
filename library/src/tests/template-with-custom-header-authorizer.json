@@ -501,11 +501,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "0f155e320e2dd99a704dbc8990a40f04b757a16239b39094543008caa4d669f6.zip"
+          "S3Key": "c6bb4bb9738b9127767f5c0bae2811097b68de093f4ff11b0719e02d778a7ca9.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T20:39:29.167Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T21:01:42.373Z\"}"
           }
         },
         "Handler": "index.handler",
