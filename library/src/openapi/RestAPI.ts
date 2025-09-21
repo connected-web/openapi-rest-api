@@ -12,7 +12,7 @@ import { generateOperationId } from './Operations'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import path from 'path'
 import { OpenAPIRouteMetadata } from './Routes'
-import fs from 'node:fs'
+import fs from 'fs'
 
 export interface OpenAPIHeaderAuthorizerProps {
   requiredHeadersWithAllowedValues?: { [header: string]: string[] }

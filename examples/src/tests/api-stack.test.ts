@@ -4,7 +4,7 @@ import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
 import { ExampleAPIStack } from '../ExampleAPI'
 
-import fs from 'node:fs'
+import fs from 'fs'
 
 const getTemplate = (): Template => {
   const app = new cdk.App()

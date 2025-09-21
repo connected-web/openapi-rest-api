@@ -6,7 +6,7 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { Template } from 'aws-cdk-lib/assertions'
 import { HarnessAPIStack } from './harness/HarnessAPI'
 
-import fs from 'node:fs'
+import fs from 'fs'
 
 function getTemplate (): Template {
   const app = new cdk.App()
