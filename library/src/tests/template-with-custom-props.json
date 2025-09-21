@@ -437,11 +437,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "89de5edb2829c088170df20c0cf2024c94f7fd2cadf097d6898919a4cebabe02.zip"
+          "S3Key": "0f155e320e2dd99a704dbc8990a40f04b757a16239b39094543008caa4d669f6.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T20:04:03.976Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T20:39:32.604Z\"}"
           }
         },
         "Handler": "index.handler",

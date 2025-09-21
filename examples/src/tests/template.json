@@ -87,7 +87,10 @@
         "ExampleAPIstatusGETB4B924D6",
         "ExampleAPIstatusOPTIONSEC7DF4E1",
         "ExampleAPIstatus12420EBC"
-      ]
+      ],
+      "Metadata": {
+        "aws:cdk:do-not-refactor": true
+      }
     },
     "ExampleAPIDeploymentStagev1550204A9": {
       "Type": "AWS::ApiGateway::Stage",
@@ -701,12 +704,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "deb5417ed580635c37e2c66f75baf3a8c6b1dc3171397b5984dec5cbe443e180.zip"
+          "S3Key": "aa650fb514f2ad3a4038c6440ac14fcc323a75b3511387bfac9b5733cf78b219.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T19:50:15.007Z\"}",
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T20:57:37.688Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -717,7 +719,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs22.x",
         "Timeout": 25
       },
       "DependsOn": [
@@ -807,15 +809,14 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "39abc08c030882b534ded270e9d0c5e8492abccd875749d8b35623ad8538e4e9.zip"
+          "S3Key": "08d8893558b1062b4da6394c996728960cff7d383ce182d20018585b0f070e31.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T19:50:21.934Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T20:57:42.259Z\"}",
             "SERVICE_DATA_BUCKET_NAME": {
               "Ref": "ExampleServiceBucketFDFBB652"
-            },
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+            }
           }
         },
         "Handler": "index.handler",
@@ -826,7 +827,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs22.x",
         "Timeout": 25
       },
       "DependsOn": [

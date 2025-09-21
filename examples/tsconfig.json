@@ -3,7 +3,8 @@
     "moduleResolution": "node",
     "target": "es6",
     "module": "commonjs",
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
     "strict": true,
     "sourceMap": true,
     "declaration": true,
@@ -15,7 +16,7 @@
     "outDir": "./dist",
     "typeRoots": ["node_modules/@types"],
     "resolveJsonModule": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "paths": {
       "@connected-web/openapi-rest-api": ["../library/src/PackageIndex.ts"]
     }
