@@ -39,6 +39,7 @@ export class HarnessAPIStack extends cdk.Stack {
       SubDomain: 'harness-api',
       HostedZoneDomain: config.hostedZoneDomain,
       Verifiers: config?.identity?.Verifiers ?? [],
+      HeaderAuthorizer: config?.identity?.HeaderAuthorizer,
       StageName: config.stageName,
       AdditionalCORSHeaders: config.additionalCorsHeaders
     }, sharedResources)

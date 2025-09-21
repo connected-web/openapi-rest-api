@@ -161,10 +161,25 @@ describe('REST API using Harness as Test Bed with custom Header Authorizer props
     template = getTemplateWithCustomHeaderAuthorizerProps()
   })
 
-  it('Creates an AWS ApiGateway RestApi with the correct title and description', () => {
-    template.hasResourceProperties('AWS::ApiGateway::RestApi', {
-      Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
-      Name: 'Harness API'
+  it('Creates PrivateHeaderAPIAuthorizer Lambda with expected environment variables', () => {
+    template.hasResourceProperties('AWS::Lambda::Function', {
+      Environment: {
+        Variables: {
+          REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON: '{"x-api-key":["1234567890"]}',
+          REQUIRED_HEADERS_REGEX_VALUES_JSON: '{"x-request-id":"^[a-f0-9]{32}$"}',
+          DISALLOWED_HEADERS_JSON: '["x-disallowed-header"]',
+          DISALLOWED_HEADER_REGEXES_JSON: '["^x-regex-.*$"]'
+        }
+      }
+    })
+  })
+
+  it('Creates PrivateHeaderAPIAuthorizer Lambda with default runtime/handler/memory', () => {
+    template.hasResourceProperties('AWS::Lambda::Function', {
+      Handler: 'index.handler',
+      Runtime: 'nodejs22.x',
+      MemorySize: 768,
+      Timeout: 5
     })
   })
 })
