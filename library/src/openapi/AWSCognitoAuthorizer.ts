@@ -7,6 +7,7 @@ export interface AuthorizerContext extends APIGatewayAuthorizerResultContext {
   token?: string
   groups?: string
   payload?: string
+  authorizerError?: string
 }
 
 const { AUTH_VERIFIERS_JSON } = process.env

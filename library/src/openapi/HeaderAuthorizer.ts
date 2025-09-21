@@ -22,7 +22,7 @@ export async function handler (event: APIGatewayRequestAuthorizerEvent): Promise
   return await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
 }
 
-async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAuthorizerEventHeaders, headerAuthorizerSettings: OpenAPIHeaderAuthorizerProps): Promise<APIGatewayAuthorizerResult> {
+export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAuthorizerEventHeaders, headerAuthorizerSettings: OpenAPIHeaderAuthorizerProps): Promise<APIGatewayAuthorizerResult> {
   const policies: APIGatewayAuthorizerResult[] = []
 
   if (headerAuthorizerSettings.requiredHeadersWithAllowedValues !== undefined) {
@@ -95,10 +95,9 @@ async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAu
     disallowedHeaderRegexes.forEach((regexString) => {
       const regex = new RegExp(regexString)
       for (const header in availableHeaders) {
-        const headerValue = availableHeaders[header] ?? availableHeaders[header.toLowerCase()] ?? ''
-        if (regex.test(headerValue)) {
+        if (regex.test(header)) {
           anyMatch = true
-          console.log(`Header ${header} with value ${headerValue} matches disallowed regex`, { regex: regexString })
+          console.log(`Header ${header} matches disallowed regex`, { regex: regexString })
           break
         }
       }
@@ -111,12 +110,14 @@ async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAu
     }
   }
 
-  // Return the first Allow policy if any, otherwise return the first Deny policy or a default Deny
-  const validPolicy = policies.find(policy => policy.policyDocument.Statement[0].Effect === 'Allow')
-  if (validPolicy !== undefined) {
-    return validPolicy
-  }
-  return policies[0] ?? buildPolicy('Deny', 'no-verifiers-configured', { authorizerError: 'No verifiers configured' })
+  // Prefer Deny if present
+  const denyPolicy = policies.find(policy => policy.policyDocument.Statement[0].Effect === 'Deny')
+  if (denyPolicy != null) return denyPolicy
+
+  const allowPolicy = policies.find(policy => policy.policyDocument.Statement[0].Effect === 'Allow')
+  if (allowPolicy != null) return allowPolicy
+
+  return buildPolicy('Deny', 'no-verifiers-configured', { authorizerError: 'No verifiers configured' })
 }
 
 function buildPolicy (allowOrDeny: 'Allow' | 'Deny', principalId: string, context: AuthorizerContext): APIGatewayAuthorizerResult {
