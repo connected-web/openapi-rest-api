@@ -70,7 +70,10 @@
         "HarnessAPIstatusGET452BE2B5",
         "HarnessAPIstatusOPTIONS1A78CFCD",
         "HarnessAPIstatusCCD9C0CA"
-      ]
+      ],
+      "Metadata": {
+        "aws:cdk:do-not-refactor": true
+      }
     },
     "HarnessAPIDeploymentStage202402145415D88A": {
       "Type": "AWS::ApiGateway::Stage",
@@ -434,11 +437,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "ca8684077200166a4415ba1e842be4ff928a6b7c8d82b4ddc6732c788bf84be6.zip"
+          "S3Key": "89de5edb2829c088170df20c0cf2024c94f7fd2cadf097d6898919a4cebabe02.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2024-12-04T16:13:39.025Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T19:58:50.088Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -449,7 +452,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs20.x",
+        "Runtime": "nodejs22.x",
         "Timeout": 30
       },
       "DependsOn": [

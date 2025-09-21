@@ -180,7 +180,7 @@ describe('REST API using Harness as Test Bed with custom Lambda props', () => {
     template.hasResourceProperties('AWS::Lambda::Function', {
       Handler: 'index.handler',
       MemorySize: 1024,
-      Runtime: 'nodejs20.x',
+      Runtime: 'nodejs22.x',
       Timeout: 30
     })
   })
