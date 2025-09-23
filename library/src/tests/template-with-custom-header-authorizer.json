@@ -53,7 +53,7 @@
             ]
           ]
         },
-        "IdentitySource": "method.request.header.Authorization",
+        "IdentitySource": "method.request.header.x-api-key",
         "Name": "MyTestStackHarnessAPIPrivateApiRequestAuthorizer48A91ABF",
         "RestApiId": {
           "Ref": "HarnessAPIFE0E1CB0"
@@ -501,11 +501,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "c6bb4bb9738b9127767f5c0bae2811097b68de093f4ff11b0719e02d778a7ca9.zip"
+          "S3Key": "8c700150adfab4bec494fd8ad0c3dec1bf9e02cc15aa7342af5dd39a9854968e.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-21T21:01:42.373Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-23T07:57:09.179Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -560,7 +560,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "4afb4d64a7e343af835e402733ebcd080a0fc62dd19d705751bcb160e055e8f7.zip"
+          "S3Key": "bfc8f576163fbb29fd070a40d216c648118ae30b0d3304f6d3ba5f30598963b4.zip"
         },
         "Environment": {
           "Variables": {
