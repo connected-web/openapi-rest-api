@@ -3,11 +3,12 @@ import { CognitoJwtVerifier } from 'aws-jwt-verify'
 import axios, { AxiosInstance } from 'axios'
 import { Verifier } from './RestAPI'
 
-export interface AuthorizerContext extends APIGatewayAuthorizerResultContext {
+export interface OpenAPIAuthorizerContext extends APIGatewayAuthorizerResultContext {
   token?: string
   groups?: string
   payload?: string
   authorizerError?: string
+  method?: string
 }
 
 const { AUTH_VERIFIERS_JSON } = process.env
@@ -59,14 +60,14 @@ async function getPolicyFromAuthHeader (authHeader: string, verifiers: Verifier[
   }, [])
 
   const policies = await Promise.all(authChecks)
-  const validPolicy = policies.find(policy => policy.policyDocument.Statement[0].Effect === 'Allow')
+  const validPolicy = policies.find((policy: APIGatewayAuthorizerResult) => policy.policyDocument.Statement[0].Effect === 'Allow')
   if (validPolicy !== undefined) {
     return validPolicy
   }
   return policies[0] ?? buildPolicy('Deny', 'no-verifiers-configured', { authorizerError: 'No verifiers configured' })
 }
 
-function buildPolicy (allowOrDeny: 'Allow' | 'Deny', principalId: string, context: AuthorizerContext): APIGatewayAuthorizerResult {
+function buildPolicy (allowOrDeny: 'Allow' | 'Deny', principalId: string, context: OpenAPIAuthorizerContext): APIGatewayAuthorizerResult {
   return {
     principalId,
     policyDocument: {

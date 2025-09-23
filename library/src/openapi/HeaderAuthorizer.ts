@@ -1,6 +1,6 @@
 import { APIGatewayAuthorizerResult, APIGatewayRequestAuthorizerEvent, APIGatewayRequestAuthorizerEventHeaders } from 'aws-lambda'
 import { OpenAPIHeaderAuthorizerProps } from './RestAPI'
-import { AuthorizerContext } from './AWSCognitoAuthorizer'
+import { OpenAPIAuthorizerContext } from './AWSCognitoAuthorizer'
 
 const {
   REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON,
@@ -120,7 +120,7 @@ export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRe
   return buildPolicy('Deny', 'no-verifiers-configured', { authorizerError: 'No verifiers configured' })
 }
 
-function buildPolicy (allowOrDeny: 'Allow' | 'Deny', principalId: string, context: AuthorizerContext): APIGatewayAuthorizerResult {
+function buildPolicy (allowOrDeny: 'Allow' | 'Deny', principalId: string, context: OpenAPIAuthorizerContext): APIGatewayAuthorizerResult {
   return {
     principalId,
     policyDocument: {

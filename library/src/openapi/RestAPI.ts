@@ -15,21 +15,66 @@ import { OpenAPIRouteMetadata } from './Routes'
 import fs from 'fs'
 
 export interface OpenAPIHeaderAuthorizerProps {
+  /**
+   * A list of headers that are expected by API Gateway to cache the authorizer response.
+   *
+   * If not provided; will default to the keys from requiredHeadersWithAllowedValues, if any.
+   */
+  authorizationHeaders?: string[]
+  /**
+   * A map of required headers and their allowed values. If a header is required but not present, or if its value is not in the allowed list, the request will be denied.
+   */
   requiredHeadersWithAllowedValues?: { [header: string]: string[] }
+  /**
+   * A map of required headers and their regex values. If a header is required but not present, or if its value does not match the regex, the request will be denied.
+   */
   requiredHeadersRegexValues?: { [header: string]: string }
+  /**
+   * A list of headers that must not be present in the request. If any of these headers are present, the request will be denied.
+   */
   disallowedHeaders?: string[]
+  /**
+   * A list of regexes for headers that must not be present in the request. If any header matches any of these regexes, the request will be denied.
+   */
   disallowedHeaderRegexes?: string[]
 }
 
 export interface OpenAPIRestAPIProps {
+  /**
+   * A description of the API, which will appear in the API Gateway console.
+   */
   Description: string
+  /**
+   * The subdomain of the hosted zone in Route53 where the CNAME record for the API will be associated.
+   */
   SubDomain: string
+  /**
+   * The domain of the hosted zone in Route53 where the CNAME record for the API will be created.
+   */
   HostedZoneDomain: string
+  /**
+   * If provided, the API will create an AWS Cognito-based authorizer, configured with these verifiers.
+   */
   Verifiers: Verifier[]
+  /**
+   * If provided, the API will create a custom authorizer Lambda function, located at this path.
+   */
   AuthorizerPath?: string
+  /**
+   * If provided, the API will use an existing authorizer Lambda function, identified by its ARN.
+   */
   AuthorizerARN?: string
+  /**
+   * If provided, the API will create a header-based authorizer, which checks for the presence and values of specified headers.
+   */
   HeaderAuthorizer?: OpenAPIHeaderAuthorizerProps
+  /**
+   * If provided, the API will use this stage name instead of the default 'v1'.
+   */
   StageName?: string
+  /**
+   * Additional headers to include in CORS responses.
+   */
   AdditionalCORSHeaders?: string[]
 }
 
@@ -121,6 +166,8 @@ export default class OpenAPIRestAPI<R> extends Construct {
     }
 
     let authLambda: IFunction | undefined
+    const defaultMethodOptions: MethodOptions | any = {}
+
     if (props.AuthorizerARN !== undefined) {
       authLambda = NodejsFunction.fromFunctionArn(scope, 'ExistingAPIAuthorizer', props.AuthorizerARN)
     } else if (props.Verifiers.length > 0) {
@@ -143,6 +190,11 @@ export default class OpenAPIRestAPI<R> extends Construct {
         environment: {
           AUTH_VERIFIERS_JSON: JSON.stringify(props.Verifiers)
         }
+      })
+
+      defaultMethodOptions.authorizer = new RequestAuthorizer(this, 'PrivateApiRequestAuthorizer', {
+        handler: authLambda,
+        identitySources: [IdentitySource.header('Authorization')]
       })
     } else if (props.HeaderAuthorizer !== undefined) {
       const tsPath = path.join(__dirname, props.AuthorizerPath ?? './HeaderAuthorizer.ts')
@@ -168,13 +220,16 @@ export default class OpenAPIRestAPI<R> extends Construct {
           DISALLOWED_HEADER_REGEXES_JSON: JSON.stringify(props.HeaderAuthorizer.disallowedHeaderRegexes ?? [])
         }
       })
-    }
 
-    const defaultMethodOptions: MethodOptions | any = {}
-    if (authLambda !== undefined) {
+      const configuredAuthHeaders = props.HeaderAuthorizer.authorizationHeaders ?? []
+      const fallbackHeaders = Object.keys(props.HeaderAuthorizer.requiredHeadersWithAllowedValues ?? {})
+      if (configuredAuthHeaders.length === 0 && fallbackHeaders.length === 0) {
+        throw new Error('OpenAPIRestAPI: HeaderAuthorizer requires at least one of authorizationHeaders or requiredHeadersWithAllowedValues to be set with at least one header.')
+      }
+      const expectedHeaders = configuredAuthHeaders.length > 0 ? configuredAuthHeaders : fallbackHeaders
       defaultMethodOptions.authorizer = new RequestAuthorizer(this, 'PrivateApiRequestAuthorizer', {
         handler: authLambda,
-        identitySources: [IdentitySource.header('Authorization')]
+        identitySources: expectedHeaders.map(headerKey => IdentitySource.header(headerKey))
       })
     }
 
