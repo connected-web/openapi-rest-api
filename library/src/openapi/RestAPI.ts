@@ -221,12 +221,15 @@ export default class OpenAPIRestAPI<R> extends Construct {
         }
       })
 
-      const configuredAuthHeaders = props.HeaderAuthorizer.authorizationHeaders ?? []
-      const fallbackHeaders = Object.keys(props.HeaderAuthorizer.requiredHeadersWithAllowedValues ?? {})
+      const configuredAuthHeaders = (props.HeaderAuthorizer.authorizationHeaders ?? []).map(h => h.toLowerCase())
+      const fallbackHeaders = Object.keys(props.HeaderAuthorizer.requiredHeadersWithAllowedValues ?? {}).map(h => h.toLowerCase())
+
       if (configuredAuthHeaders.length === 0 && fallbackHeaders.length === 0) {
         throw new Error('OpenAPIRestAPI: HeaderAuthorizer requires at least one of authorizationHeaders or requiredHeadersWithAllowedValues to be set with at least one header.')
       }
+
       const expectedHeaders = configuredAuthHeaders.length > 0 ? configuredAuthHeaders : fallbackHeaders
+
       defaultMethodOptions.authorizer = new RequestAuthorizer(this, 'PrivateApiRequestAuthorizer', {
         handler: authLambda,
         identitySources: expectedHeaders.map(headerKey => IdentitySource.header(headerKey))

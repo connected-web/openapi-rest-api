@@ -9,11 +9,23 @@ const {
   DISALLOWED_HEADER_REGEXES_JSON
 } = process.env
 
+function toLowerKeys<T extends Record<string, any>> (obj: T): Record<string, any> {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k.toLowerCase(), v]))
+}
+
 const headerAuthorizerSettings: OpenAPIHeaderAuthorizerProps = {
-  requiredHeadersWithAllowedValues: REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON !== undefined ? JSON.parse(REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON) : undefined,
-  requiredHeadersRegexValues: REQUIRED_HEADERS_REGEX_VALUES_JSON !== undefined ? JSON.parse(REQUIRED_HEADERS_REGEX_VALUES_JSON) : {},
-  disallowedHeaders: DISALLOWED_HEADERS_JSON !== undefined ? JSON.parse(DISALLOWED_HEADERS_JSON) : undefined,
-  disallowedHeaderRegexes: DISALLOWED_HEADER_REGEXES_JSON !== undefined ? JSON.parse(DISALLOWED_HEADER_REGEXES_JSON) : undefined
+  requiredHeadersWithAllowedValues: REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON !== undefined
+    ? toLowerKeys(JSON.parse(REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON))
+    : undefined,
+  requiredHeadersRegexValues: REQUIRED_HEADERS_REGEX_VALUES_JSON !== undefined
+    ? toLowerKeys(JSON.parse(REQUIRED_HEADERS_REGEX_VALUES_JSON))
+    : {},
+  disallowedHeaders: DISALLOWED_HEADERS_JSON !== undefined
+    ? (JSON.parse(DISALLOWED_HEADERS_JSON) as string[]).map(h => h.toLowerCase())
+    : undefined,
+  disallowedHeaderRegexes: DISALLOWED_HEADER_REGEXES_JSON !== undefined
+    ? JSON.parse(DISALLOWED_HEADER_REGEXES_JSON)
+    : undefined
 }
 
 export async function handler (event: APIGatewayRequestAuthorizerEvent): Promise<APIGatewayAuthorizerResult> {
