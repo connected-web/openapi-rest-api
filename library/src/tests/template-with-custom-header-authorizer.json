@@ -505,7 +505,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-23T15:28:46.551Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-23T21:19:41.581Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -560,7 +560,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "513ec0f6daee6b54312cff6a85d99197b5ab13a9a41d5cdbd9e0f029ef457bf8.zip"
+          "S3Key": "ac75ab5f6a4fa1394c3a1538dc4b0276521c0c26d8588c46074495d8419bfd40.zip"
         },
         "Environment": {
           "Variables": {
