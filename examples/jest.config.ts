@@ -5,10 +5,9 @@ const config: Config = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest'
+    '^.+\\.(t|j)sx?$': ['@swc/jest', {}]
   },
   moduleNameMapper: {
     '^@connected-web/openapi-rest-api$': '<rootDir>../library/src/PackageIndex.ts'

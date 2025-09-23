@@ -501,11 +501,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "8c700150adfab4bec494fd8ad0c3dec1bf9e02cc15aa7342af5dd39a9854968e.zip"
+          "S3Key": "0c46d99cc6c814617d7c34c2cd953b7857e7b63537a49451cacc3e484991410c.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-23T07:57:09.179Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-23T15:28:46.551Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -560,7 +560,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "bfc8f576163fbb29fd070a40d216c648118ae30b0d3304f6d3ba5f30598963b4.zip"
+          "S3Key": "513ec0f6daee6b54312cff6a85d99197b5ab13a9a41d5cdbd9e0f029ef457bf8.zip"
         },
         "Environment": {
           "Variables": {
