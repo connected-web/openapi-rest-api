@@ -1,6 +1,6 @@
 {
   "name": "openapi-rest-api-example",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "scripts": {
     "test": "ts-standard && npm run test:example",
     "test:example": "jest src/tests/**.test.ts",
