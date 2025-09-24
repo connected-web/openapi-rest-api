@@ -3,7 +3,7 @@
     "moduleResolution": "node",
     "target": "es6",
     "module": "commonjs",
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "strict": true,
     "sourceMap": true,
     "declaration": true,
@@ -13,7 +13,7 @@
     "emitDecoratorMetadata": true,
     "declarationDir": "./dist",
     "outDir": "./dist",
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["../node_modules/@types", "node_modules/@types"],
     "resolveJsonModule": true
   },
   "include": ["**/*.ts", "../test-api/src/ApiStack.ts", "../test-api/src/Resources.ts"],
