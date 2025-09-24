@@ -7,7 +7,11 @@ const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.(t|j)sx?$': ['@swc/jest', {}]
+    '^.+\\.(t|j)sx?$': ['@swc/jest', {
+      jsc: {
+        target: 'es2022'
+      }
+    }]
   },
   moduleNameMapper: {
     '^@connected-web/openapi-rest-api$': '<rootDir>../library/src/PackageIndex.ts'
