@@ -232,7 +232,8 @@ export default class OpenAPIRestAPI<R> extends Construct {
 
       defaultMethodOptions.authorizer = new RequestAuthorizer(this, 'PrivateApiRequestAuthorizer', {
         handler: authLambda,
-        identitySources: expectedHeaders.map(headerKey => IdentitySource.header(headerKey))
+        identitySources: expectedHeaders.map(headerKey => IdentitySource.header(headerKey)),
+        resultsCacheTtl: Duration.seconds(0) // Disable caching for header-based authorizer
       })
     }
 
