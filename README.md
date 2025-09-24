@@ -57,6 +57,8 @@ The authorizer supports multiple Cognito User Pool clients to allow for differen
 
 #### Example HeaderAuthorizer
 
+Header-based authorization can be used to validate requests based on custom headers. This is useful for machine-to-machine communication, or for simple API key validation. The `HeaderAuthorizer` configuration supports the following parameters:
+
 ```json
 "HeaderAuthorizer": {
   "requiredHeadersWithAllowedValues": {
@@ -70,6 +72,9 @@ The authorizer supports multiple Cognito User Pool clients to allow for differen
 }
 ```
 
+Note when using `HeaderAuthorizer`, the `resultsCacheTtl` is set to `0` seconds to disable caching, ensuring each request is validated against the specified headers.
+
+#### Other OpenAPIRestAPI Features
 
 The `OpenAPIRestAPI<*>` interface also supports the following methods:
 
