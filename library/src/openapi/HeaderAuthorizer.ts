@@ -277,7 +277,7 @@ export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRe
   if (denyPolicy != null) {
     finalPolicy = denyPolicy
     finalDecision = 'Deny'
-    reason = denyPolicy.context?.authorizerError ?? 'Access denied by policy'
+    reason = denyPolicy.context?.authorizerError !== undefined ? String(denyPolicy.context.authorizerError) : 'Access denied by policy'
     logger.logPolicyDecision('fail', reason)
   } else {
     const allowPolicy = policies.find(policy => policy.policyDocument.Statement[0].Effect === 'Allow')
