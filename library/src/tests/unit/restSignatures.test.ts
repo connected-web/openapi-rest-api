@@ -1,4 +1,5 @@
-import { expect, describe, it, beforeAll } from '@jest/globals'
+import { expect } from 'chai'
+import { describe, it, before } from 'mocha'
 
 import path from 'path'
 import * as cdk from 'aws-cdk-lib'
@@ -43,7 +44,7 @@ class StubEndpointWithRestSignature extends StubEndpoint {
 
 describe('Rest Signatures', () => {
   let api: OpenAPIRestAPI<StubResources>
-  beforeAll(() => {
+  before(() => {
     process.env.CREATE_CNAME_RECORD = 'true'
     const app = new cdk.App()
     const stack = new cdk.Stack(app, 'MyTestStack', {
@@ -60,52 +61,52 @@ describe('Rest Signatures', () => {
 
   it('should process GET paths', () => {
     const endpoint = new StubGetEndpoint()
-    expect(() => api.addEndpoints({ 'GET /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'GET /test': endpoint })).not.to.throw()
   })
 
   it('should process PATCH paths', () => {
     const endpoint = new StubPatchEndpoint()
-    expect(() => api.addEndpoints({ 'PATCH /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'PATCH /test': endpoint })).not.to.throw()
   })
 
   it('should process PUT paths', () => {
     const endpoint = new StubPutEndpoint()
-    expect(() => api.addEndpoints({ 'PUT /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'PUT /test': endpoint })).not.to.throw()
   })
 
   it('should process POST paths', () => {
     const endpoint = new StubPostEndpoint()
-    expect(() => api.addEndpoints({ 'POST /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'POST /test': endpoint })).not.to.throw()
   })
 
   it('should process DELETE paths', () => {
     const endpoint = new StubDeleteEndpoint()
-    expect(() => api.addEndpoints({ 'DELETE /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'DELETE /test': endpoint })).not.to.throw()
   })
 
   it('should throw an error for unsupported HTTP methods', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'TEAPOT /test': endpoint })).toThrow('Unsupported HTTP method: TEAPOT; supported keys are: GET, PATCH, POST, PUT, DELETE')
+    expect(() => api.addEndpoints({ 'TEAPOT /test': endpoint })).to.throw('Unsupported HTTP method: TEAPOT; supported keys are: GET, PATCH, POST, PUT, DELETE')
   })
 
   it('should throw an error when an invalid path signature is supplied', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'not-a-valid-signature': endpoint })).toThrow('Invalid path from rest signature: undefined, expected a path in the form METHOD /path, e.g. GET /status')
+    expect(() => api.addEndpoints({ 'not-a-valid-signature': endpoint })).to.throw('Invalid path from rest signature: undefined, expected a path in the form METHOD /path, e.g. GET /status')
   })
 
   it('should throw an error when no rest signature is provided', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints([endpoint])).toThrow('Unable to create endpoint; neither a restSignature nor pathOverride were supplied - all routes must declare a path in the form METHOD /path, e.g. GET /status')
+    expect(() => api.addEndpoints([endpoint])).to.throw('Unable to create endpoint; neither a restSignature nor pathOverride were supplied - all routes must declare a path in the form METHOD /path, e.g. GET /status')
   })
 
   it('should throw an error when different rest signature is provided', () => {
     const endpoint = new StubEndpointWithRestSignature()
-    expect(() => api.addEndpoints({ 'GET /different/stub': endpoint })).toThrow('Unable to create endpoint; both a restSignature and pathOverride were supplied, but they do not match: GET /test/list !== GET /different/stub')
+    expect(() => api.addEndpoints({ 'GET /different/stub': endpoint })).to.throw('Unable to create endpoint; both a restSignature and pathOverride were supplied, but they do not match: GET /test/list !== GET /different/stub')
   })
 
   it('should process paths when the path override duplicates base metadata exactly', () => {
     const endpoint = new StubEndpointWithRestSignature()
-    expect(() => api.addEndpoints({ 'GET /test/list': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'GET /test/list': endpoint })).not.to.throw()
   })
 
   it('should generate a report in markdown format', () => {
@@ -129,6 +130,6 @@ describe('Rest Signatures', () => {
       '| GET | /test/list | listStubs |',
       ''
     ]
-    expect(actual.split('\n')).toEqual(expected)
+    expect(actual.split('\n')).to.deep.equal(expected)
   })
 })

@@ -1,4 +1,4 @@
-import { describe, it, beforeAll } from '@jest/globals'
+import { describe, it, before } from 'mocha'
 
 import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
@@ -29,7 +29,7 @@ const getTemplate = (): Template => {
 describe('REST API using Harness as Test Bed', () => {
   let template: Template
 
-  beforeAll(() => {
+  before(() => {
     template = getTemplate()
   })
 

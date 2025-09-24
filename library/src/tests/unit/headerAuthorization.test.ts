@@ -1,4 +1,5 @@
-import { expect, describe, it } from '@jest/globals'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { checkHeadersForPolicyMatch } from '../../openapi/HeaderAuthorizer'
 
 describe('Header Authorizer', () => {
@@ -16,7 +17,7 @@ describe('Header Authorizer', () => {
         'x-client-id': 'client-2'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
     })
 
     it('Denies when a required header is missing', async () => {
@@ -24,7 +25,7 @@ describe('Header Authorizer', () => {
         'x-api-key': '1234567890'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Deny')
     })
 
     it('Denies when a required header value does not match allowed values', async () => {
@@ -33,7 +34,7 @@ describe('Header Authorizer', () => {
         'x-client-id': 'client-1'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Deny')
     })
 
     it('Allows when required headers are provided with capitalized names', async () => {
@@ -42,7 +43,7 @@ describe('Header Authorizer', () => {
         'X-Client-Id': 'client-2' // Capitalized header
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
     })
   })
 
@@ -60,7 +61,7 @@ describe('Header Authorizer', () => {
         'x-trace-id': 'trace-abcdefgh'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
     })
 
     it('Denies when a required header is missing', async () => {
@@ -68,7 +69,7 @@ describe('Header Authorizer', () => {
         'x-request-id': 'a1b2c3d4e5f60718293a0b1c2d3e4f50'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Deny')
     })
 
     it('Denies when a required header value does not match regex pattern', async () => {
@@ -77,7 +78,7 @@ describe('Header Authorizer', () => {
         'x-trace-id': 'trace-abcdefgh'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Deny')
     })
 
     it('Allows when required headers match regex patterns with capitalized names', async () => {
@@ -86,7 +87,7 @@ describe('Header Authorizer', () => {
         'X-Trace-Id': 'trace-abcdefgh' // Capitalized header
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
     })
   })
 
@@ -101,7 +102,7 @@ describe('Header Authorizer', () => {
         'x-client-id': 'client-1'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
     })
 
     it('Denies when a disallowed header is present', async () => {
@@ -110,7 +111,7 @@ describe('Header Authorizer', () => {
         'x-disallowed-header': 'bad-value'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Deny')
     })
   })
 
@@ -125,7 +126,7 @@ describe('Header Authorizer', () => {
         'x-client-id': 'client-1'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
     })
 
     it('Denies when a header matches a disallowed regex pattern', async () => {
@@ -134,7 +135,7 @@ describe('Header Authorizer', () => {
         'x-bad-header': 'another-value'
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-      expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
+      expect(result.policyDocument.Statement[0].Effect).to.equal('Deny')
     })
   })
 
@@ -155,11 +156,11 @@ describe('Header Authorizer', () => {
       'x-request-id': 'a1b2c3d4e5f60718293a0b1c2d3e4f50'
     }
     const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-    expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+    expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
 
     // Now add a disallowed header to trigger Deny
     availableHeaders['x-disallowed-header'] = 'bad-value'
     const resultWithDisallowed = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
-    expect(resultWithDisallowed.policyDocument.Statement[0].Effect).toBe('Deny')
+    expect(resultWithDisallowed.policyDocument.Statement[0].Effect).to.equal('Deny')
   })
 })
