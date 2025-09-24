@@ -1,4 +1,5 @@
-import { expect, describe, it, beforeAll } from '@jest/globals'
+import { expect } from 'chai'
+import { describe, it, before } from 'mocha'
 
 import path from 'path'
 import * as cdk from 'aws-cdk-lib'
@@ -17,7 +18,7 @@ class StubEndpoint extends OpenAPIRouteMetadata<StubResources> {
 
 describe('Generated Operation IDs', () => {
   let api: OpenAPIRestAPI<StubResources>
-  beforeAll(() => {
+  before(() => {
     process.env.CREATE_CNAME_RECORD = 'true'
     const app = new cdk.App()
     const stack = new cdk.Stack(app, 'MyTestStack', {
@@ -34,44 +35,44 @@ describe('Generated Operation IDs', () => {
 
   it('should generate IDs for GET paths', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'GET /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'GET /test': endpoint })).not.to.throw()
     const mostRecent = api.endpoints[api.endpoints.length - 1]
-    expect(mostRecent.value.operationId).toEqual('getTest')
+    expect(mostRecent.value.operationId).to.equal('getTest')
   })
 
   it('should generate IDs for PUT paths', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'PUT /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'PUT /test': endpoint })).not.to.throw()
     const mostRecent = api.endpoints[api.endpoints.length - 1]
-    expect(mostRecent.value.operationId).toEqual('putTest')
+    expect(mostRecent.value.operationId).to.equal('putTest')
   })
 
   it('should generate IDs for POST paths', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'POST /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'POST /test': endpoint })).not.to.throw()
     const mostRecent = api.endpoints[api.endpoints.length - 1]
-    expect(mostRecent.value.operationId).toEqual('postTest')
+    expect(mostRecent.value.operationId).to.equal('postTest')
   })
 
   it('should generate IDs for DELETE paths', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'DELETE /test': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'DELETE /test': endpoint })).not.to.throw()
     const mostRecent = api.endpoints[api.endpoints.length - 1]
-    expect(mostRecent.value.operationId).toEqual('deleteTest')
+    expect(mostRecent.value.operationId).to.equal('deleteTest')
   })
 
   it('should generate IDs for complex paths with parameters', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'GET /user/{userId}/history/{versionId}': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'GET /user/{userId}/history/{versionId}': endpoint })).not.to.throw()
     const mostRecent = api.endpoints[api.endpoints.length - 1]
-    expect(mostRecent.value.operationId).toEqual('getUserIdHistoryVersionId')
+    expect(mostRecent.value.operationId).to.equal('getUserIdHistoryVersionId')
   })
 
   it('should generate IDs for complex paths with hyphens', () => {
     const endpoint = new StubEndpoint()
-    expect(() => api.addEndpoints({ 'PUT /user-elaborate-data/create': endpoint })).not.toThrow()
+    expect(() => api.addEndpoints({ 'PUT /user-elaborate-data/create': endpoint })).not.to.throw()
     const mostRecent = api.endpoints[api.endpoints.length - 1]
-    expect(mostRecent.value.operationId).toEqual('putUserElaborateDataCreate')
+    expect(mostRecent.value.operationId).to.equal('putUserElaborateDataCreate')
   })
 
   it('should generate a report in markdown format', () => {
@@ -95,6 +96,6 @@ describe('Generated Operation IDs', () => {
       '| PUT | /user-elaborate-data/create | putUserElaborateDataCreate |',
       ''
     ]
-    expect(actual.split('\n')).toEqual(expected)
+    expect(actual.split('\n')).to.deep.equal(expected)
   })
 })

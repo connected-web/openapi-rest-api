@@ -1,0 +1,7 @@
+{
+  "spec": "src/tests/**/*.test.ts",
+  "require": ["tsx/cjs"],
+  "extensions": ["ts"],
+  "recursive": true,
+  "timeout": 30000
+}

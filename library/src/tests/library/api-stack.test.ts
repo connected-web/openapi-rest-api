@@ -1,4 +1,4 @@
-import { describe, it, beforeAll } from '@jest/globals'
+import { describe, it, before } from 'mocha'
 
 import * as cdk from 'aws-cdk-lib'
 import { Duration } from 'aws-cdk-lib'
@@ -103,7 +103,7 @@ function getTemplateWithCustomLambdaProps (): Template {
 describe('REST API using Harness as Test Bed', () => {
   let template: Template
 
-  beforeAll(() => {
+  before(() => {
     template = getTemplate()
   })
 
@@ -157,7 +157,7 @@ describe('REST API using Harness as Test Bed', () => {
 describe('REST API using Harness as Test Bed with custom Header Authorizer props', () => {
   let template: Template
 
-  beforeAll(() => {
+  before(() => {
     template = getTemplateWithCustomHeaderAuthorizerProps()
   })
 
@@ -187,7 +187,7 @@ describe('REST API using Harness as Test Bed with custom Header Authorizer props
 describe('REST API using Harness as Test Bed with custom Lambda props', () => {
   let template: Template
 
-  beforeAll(() => {
+  before(() => {
     template = getTemplateWithCustomLambdaProps()
   })
 

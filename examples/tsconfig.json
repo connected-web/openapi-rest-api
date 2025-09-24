@@ -16,7 +16,7 @@
     "outDir": "./dist",
     "typeRoots": ["node_modules/@types"],
     "resolveJsonModule": true,
-    "types": ["node", "jest"],
+    "types": ["node", "mocha", "chai"],
     "paths": {
       "@connected-web/openapi-rest-api": ["../library/src/PackageIndex.ts"]
     }

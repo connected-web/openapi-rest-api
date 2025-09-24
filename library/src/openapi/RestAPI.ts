@@ -172,9 +172,9 @@ export default class OpenAPIRestAPI<R> extends Construct {
       authLambda = NodejsFunction.fromFunctionArn(scope, 'ExistingAPIAuthorizer', props.AuthorizerARN)
     } else if (props.Verifiers.length > 0) {
       const tsPath = path.join(__dirname, props.AuthorizerPath ?? './AWSCognitoAuthorizer.ts')
-      const entryFilePath = fs.existsSync(tsPath) ? tsPath : tsPath.replace('.ts', '.js')
-      if (!fs.existsSync(entryFilePath)) {
-        throw new Error(`OpenAPIRestAPI: Unable to find authorizer file at ${entryFilePath}`)
+      const entryFilePath = (fs.existsSync(tsPath) === true) ? tsPath : tsPath.replace('.ts', '.js')
+      if (!(fs.existsSync(entryFilePath) === true)) {
+        throw new Error(`OpenAPIRestAPI: Unable to find authorizer file at ${String(entryFilePath)}`)
       }
 
       authLambda = new NodejsFunction(scope, 'PrivateAPIAuthorizer', {
@@ -198,9 +198,9 @@ export default class OpenAPIRestAPI<R> extends Construct {
       })
     } else if (props.HeaderAuthorizer !== undefined) {
       const tsPath = path.join(__dirname, props.AuthorizerPath ?? './HeaderAuthorizer.ts')
-      const entryFilePath = fs.existsSync(tsPath) ? tsPath : tsPath.replace('.ts', '.js')
-      if (!fs.existsSync(entryFilePath)) {
-        throw new Error(`OpenAPIRestAPI: Unable to find authorizer file at ${entryFilePath}`)
+      const entryFilePath = (fs.existsSync(tsPath) === true) ? tsPath : tsPath.replace('.ts', '.js')
+      if (!(fs.existsSync(entryFilePath) === true)) {
+        throw new Error(`OpenAPIRestAPI: Unable to find authorizer file at ${String(entryFilePath)}`)
       }
 
       authLambda = new NodejsFunction(scope, 'PrivateHeaderAPIAuthorizer', {

@@ -1,15 +1,17 @@
-import { expect, describe, it, jest } from '@jest/globals'
+import { expect } from 'chai'
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import sinon from 'sinon'
 import { checkHeadersForPolicyMatch } from '../../openapi/HeaderAuthorizer'
 
 describe('Authorization Logging', () => {
-  let consoleSpy: jest.SpiedFunction<typeof console.log>
+  let consoleSpy: sinon.SinonSpy
 
   beforeEach(() => {
-    consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+    consoleSpy = sinon.spy(console, 'log')
   })
 
   afterEach(() => {
-    consoleSpy.mockRestore()
+    consoleSpy.restore()
   })
 
   it('should log a single authorization summary instead of multiple console.log calls', async () => {
@@ -30,40 +32,40 @@ describe('Authorization Logging', () => {
     const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
 
     // Should only log once for the authorization summary
-    expect(consoleSpy).toHaveBeenCalledTimes(1)
+    expect(consoleSpy.callCount).to.equal(1)
 
     // The single log should be an Authorization Summary
-    const logCall = consoleSpy.mock.calls[0]
-    expect(logCall[0]).toBe('Authorization Summary:')
+    const logCall = consoleSpy.getCall(0)
+    expect(logCall.args[0]).to.equal('Authorization Summary:')
 
     // Parse the JSON summary
-    const summary = JSON.parse(logCall[1])
+    const summary = JSON.parse(logCall.args[1])
 
     // Verify summary structure
-    expect(summary).toHaveProperty('suppliedHeaders')
-    expect(summary).toHaveProperty('criteriaResults')
-    expect(summary).toHaveProperty('finalDecision')
-    expect(summary).toHaveProperty('principalId')
-    expect(summary).toHaveProperty('reason')
-    expect(summary).toHaveProperty('timestamp')
+    expect(summary).to.have.property('suppliedHeaders')
+    expect(summary).to.have.property('criteriaResults')
+    expect(summary).to.have.property('finalDecision')
+    expect(summary).to.have.property('principalId')
+    expect(summary).to.have.property('reason')
+    expect(summary).to.have.property('timestamp')
 
     // Verify supplied headers are captured
-    expect(summary.suppliedHeaders).toEqual({
+    expect(summary.suppliedHeaders).to.deep.equal({
       'x-api-key': '1234567890',
       'x-client-id': 'client-2',
       'x-custom': 'value'
     })
 
     // Verify criteria results are present
-    expect(summary.criteriaResults).toHaveLength(2)
-    expect(summary.criteriaResults[0].checkType).toBe('requiredHeadersWithAllowedValues')
-    expect(summary.criteriaResults[0].result).toBe('pass')
-    expect(summary.criteriaResults[1].checkType).toBe('disallowedHeaders')
-    expect(summary.criteriaResults[1].result).toBe('pass')
+    expect(summary.criteriaResults).to.have.lengthOf(2)
+    expect(summary.criteriaResults[0].checkType).to.equal('requiredHeadersWithAllowedValues')
+    expect(summary.criteriaResults[0].result).to.equal('pass')
+    expect(summary.criteriaResults[1].checkType).to.equal('disallowedHeaders')
+    expect(summary.criteriaResults[1].result).to.equal('pass')
 
     // Verify final decision
-    expect(summary.finalDecision).toBe('Allow')
-    expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+    expect(summary.finalDecision).to.equal('Allow')
+    expect(result.policyDocument.Statement[0].Effect).to.equal('Allow')
   })
 
   it('should provide detailed failure information in the summary', async () => {
@@ -83,16 +85,16 @@ describe('Authorization Logging', () => {
 
     await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
 
-    const logCall = consoleSpy.mock.calls[0]
-    const summary = JSON.parse(logCall[1])
+    const logCall = consoleSpy.getCall(0)
+    const summary = JSON.parse(logCall.args[1])
 
     // Should have failed criteria
-    expect(summary.finalDecision).toBe('Deny')
-    expect(summary.criteriaResults[0].result).toBe('fail')
+    expect(summary.finalDecision).to.equal('Deny')
+    expect(summary.criteriaResults[0].result).to.equal('fail')
 
     // Should have detailed failure information
-    expect(summary.criteriaResults[0].failedHeaders).toHaveProperty('x-api-key')
-    expect(summary.criteriaResults[0].failedHeaders['x-api-key']).toEqual({
+    expect(summary.criteriaResults[0].failedHeaders).to.have.property('x-api-key')
+    expect(summary.criteriaResults[0].failedHeaders['x-api-key']).to.deep.equal({
       expected: ['valid-key'],
       actual: 'invalid-key'
     })
