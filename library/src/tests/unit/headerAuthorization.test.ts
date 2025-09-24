@@ -35,6 +35,15 @@ describe('Header Authorizer', () => {
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
       expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
     })
+
+    it('Allows when required headers are provided with capitalized names', async () => {
+      const availableHeaders = {
+        'X-Api-Key': '1234567890', // Capitalized header
+        'X-Client-Id': 'client-2' // Capitalized header
+      }
+      const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
+      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
+    })
   })
 
   describe('REQUIRED_HEADERS_REGEX_VALUES_JSON', () => {
@@ -69,6 +78,15 @@ describe('Header Authorizer', () => {
       }
       const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
       expect(result.policyDocument.Statement[0].Effect).toBe('Deny')
+    })
+
+    it('Allows when required headers match regex patterns with capitalized names', async () => {
+      const availableHeaders = {
+        'X-Request-Id': 'a1b2c3d4e5f60718293a0b1c2d3e4f50', // Capitalized header
+        'X-Trace-Id': 'trace-abcdefgh' // Capitalized header
+      }
+      const result = await checkHeadersForPolicyMatch(availableHeaders, headerAuthorizerSettings)
+      expect(result.policyDocument.Statement[0].Effect).toBe('Allow')
     })
   })
 

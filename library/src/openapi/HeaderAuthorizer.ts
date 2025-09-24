@@ -178,6 +178,7 @@ export async function handler (event: APIGatewayRequestAuthorizerEvent): Promise
 
 export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRequestAuthorizerEventHeaders, headerAuthorizerSettings: OpenAPIHeaderAuthorizerProps): Promise<APIGatewayAuthorizerResult> {
   const logger = new AuthorizationLogger(availableHeaders)
+  const normalizedHeaders = toLowerKeys(availableHeaders)
   const policies: APIGatewayAuthorizerResult[] = []
 
   if (headerAuthorizerSettings.requiredHeadersWithAllowedValues !== undefined) {
@@ -185,7 +186,7 @@ export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRe
     let allMatch = true
     for (const header in requiredHeadersWithAllowedValues) {
       const allowedValues = requiredHeadersWithAllowedValues[header]
-      const headerValue = availableHeaders[header] ?? availableHeaders[header.toLowerCase()] ?? ''
+      const headerValue = normalizedHeaders[header] ?? ''
       if (!allowedValues.includes(headerValue)) {
         allMatch = false
         logger.logHeaderCheck('requiredHeadersWithAllowedValues', header, allowedValues, headerValue, 'fail')
@@ -207,7 +208,7 @@ export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRe
     for (const header in requiredHeadersRegexValues) {
       const regexString = requiredHeadersRegexValues[header]
       const regex = new RegExp(regexString)
-      const headerValue = availableHeaders[header] ?? availableHeaders[header.toLowerCase()] ?? ''
+      const headerValue = normalizedHeaders[header] ?? ''
       if (!regex.test(headerValue)) {
         allMatch = false
         logger.logRegexCheck('requiredHeadersRegexValues', header, regexString, headerValue, 'fail')
@@ -227,10 +228,10 @@ export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRe
     const disallowedHeaders = headerAuthorizerSettings.disallowedHeaders
     let anyMatch = false
     for (const header of disallowedHeaders) {
-      const headerValue = availableHeaders[header] ?? availableHeaders[header.toLowerCase()] ?? ''
+      const headerValue = normalizedHeaders[header] ?? ''
       if (headerValue !== '') {
         anyMatch = true
-        logger.logDisallowedCheck('disallowedHeaders', header, 'fail', `Disallowed header '${header}' is present with value '${headerValue}'`)
+        logger.logDisallowedCheck('disallowedHeaders', header, 'fail', `Disallowed header '${header}' is present with value '${String(headerValue)}'`)
         break
       } else {
         logger.logDisallowedCheck('disallowedHeaders', header, 'pass', `Disallowed header '${header}' is not present`)
@@ -248,10 +249,10 @@ export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRe
     let anyMatch = false
     disallowedHeaderRegexes.forEach((regexString) => {
       const regex = new RegExp(regexString)
-      for (const header in availableHeaders) {
+      for (const header in normalizedHeaders) {
         if (regex.test(header)) {
           anyMatch = true
-          logger.logDisallowedCheck('disallowedHeaderRegexes', header, 'fail', `Header '${header}' matches disallowed regex /${regexString}/`)
+          logger.logDisallowedCheck('disallowedHeaderRegexes', header, 'fail', `Header '${header}' matches disallowed regex /${String(regexString)}/`)
           break
         }
       }
@@ -260,7 +261,7 @@ export async function checkHeadersForPolicyMatch (availableHeaders: APIGatewayRe
       policies.push(buildPolicy('Deny', 'disallowed-header-regexes', { authorizerError: 'Disallowed header regexes matched' }))
     } else {
       // Log successful checks for headers that didn't match any disallowed regex
-      Object.keys(availableHeaders).forEach(header => {
+      Object.keys(normalizedHeaders).forEach(header => {
         logger.logDisallowedCheck('disallowedHeaderRegexes', header, 'pass', `Header '${header}' does not match any disallowed regex patterns`)
       })
       policies.push(buildPolicy('Allow', 'disallowed-header-regexes', { method: 'disallowedHeaderRegexes' }))

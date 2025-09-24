@@ -3,7 +3,7 @@
     "HarnessAPIPrivateApiRequestAuthorizerD5AB667B": {
       "Type": "AWS::ApiGateway::Authorizer",
       "Properties": {
-        "AuthorizerResultTtlInSeconds": 300,
+        "AuthorizerResultTtlInSeconds": 0,
         "AuthorizerUri": {
           "Fn::Join": [
             "",
@@ -501,11 +501,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "0c46d99cc6c814617d7c34c2cd953b7857e7b63537a49451cacc3e484991410c.zip"
+          "S3Key": "4468424594a49a3f9313120a7e0286d345c418322eb78c1ad4d00ae5fa46178c.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-23T21:19:41.581Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-24T19:14:36.092Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -560,7 +560,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "ac75ab5f6a4fa1394c3a1538dc4b0276521c0c26d8588c46074495d8419bfd40.zip"
+          "S3Key": "543495ee33de127262be6a53ce2267a37e9d0dd6af24c1051511f39719746c39.zip"
         },
         "Environment": {
           "Variables": {
