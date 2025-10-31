@@ -170,6 +170,10 @@ export default class OpenAPIRestAPI<R> extends Construct {
 
     if (props.AuthorizerARN !== undefined) {
       authLambda = NodejsFunction.fromFunctionArn(scope, 'ExistingAPIAuthorizer', props.AuthorizerARN)
+      defaultMethodOptions.authorizer = new RequestAuthorizer(this, 'ExistingApiRequestAuthorizer', {
+        handler: authLambda,
+        identitySources: [IdentitySource.header('Authorization')]
+      })
     } else if (props.Verifiers.length > 0) {
       const tsPath = path.join(__dirname, props.AuthorizerPath ?? './AWSCognitoAuthorizer.ts')
       const entryFilePath = (fs.existsSync(tsPath)) ? tsPath : tsPath.replace('.ts', '.js')

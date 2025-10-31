@@ -1,60 +1,12 @@
 {
   "Resources": {
-    "HarnessAPIPrivateApiRequestAuthorizerD5AB667B": {
+    "HarnessAPIExistingApiRequestAuthorizerE800008E": {
       "Type": "AWS::ApiGateway::Authorizer",
       "Properties": {
-        "AuthorizerResultTtlInSeconds": 0,
-        "AuthorizerUri": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Fn::Select": [
-                  1,
-                  {
-                    "Fn::Split": [
-                      ":",
-                      {
-                        "Fn::GetAtt": [
-                          "PrivateHeaderAPIAuthorizerD80B0EC4",
-                          "Arn"
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              ":apigateway:",
-              {
-                "Fn::Select": [
-                  3,
-                  {
-                    "Fn::Split": [
-                      ":",
-                      {
-                        "Fn::GetAtt": [
-                          "PrivateHeaderAPIAuthorizerD80B0EC4",
-                          "Arn"
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              ":lambda:path/2015-03-31/functions/",
-              {
-                "Fn::GetAtt": [
-                  "PrivateHeaderAPIAuthorizerD80B0EC4",
-                  "Arn"
-                ]
-              },
-              "/invocations"
-            ]
-          ]
-        },
-        "IdentitySource": "method.request.header.x-api-key",
-        "Name": "MyTestStackHarnessAPIPrivateApiRequestAuthorizer48A91ABF",
+        "AuthorizerResultTtlInSeconds": 300,
+        "AuthorizerUri": "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:1234567890:function:ExistingAPIAuthorizer/invocations",
+        "IdentitySource": "method.request.header.Authorization",
+        "Name": "MyTestStackHarnessAPIExistingApiRequestAuthorizerB3FB9FFA",
         "RestApiId": {
           "Ref": "HarnessAPIFE0E1CB0"
         },
@@ -117,7 +69,7 @@
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain"
     },
-    "HarnessAPIDeploymentCB1DE8BDb46a80866601c1d611de84b262398df0": {
+    "HarnessAPIDeploymentCB1DE8BD50ad975db0f7c8bd8a8a6095e95c9723": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "Description": "Harness API - https://github.com/connected-web/openapi-rest-api",
@@ -140,7 +92,7 @@
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
         "DeploymentId": {
-          "Ref": "HarnessAPIDeploymentCB1DE8BDb46a80866601c1d611de84b262398df0"
+          "Ref": "HarnessAPIDeploymentCB1DE8BD50ad975db0f7c8bd8a8a6095e95c9723"
         },
         "RestApiId": {
           "Ref": "HarnessAPIFE0E1CB0"
@@ -320,7 +272,7 @@
       "Properties": {
         "AuthorizationType": "CUSTOM",
         "AuthorizerId": {
-          "Ref": "HarnessAPIPrivateApiRequestAuthorizerD5AB667B"
+          "Ref": "HarnessAPIExistingApiRequestAuthorizerE800008E"
         },
         "HttpMethod": "GET",
         "Integration": {
@@ -569,11 +521,11 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-10-31T15:33:21.518Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2025-10-31T15:33:25.737Z\"}"
           }
         },
         "Handler": "index.handler",
-        "MemorySize": 512,
+        "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
             "HarnessAPIGetStatusServiceRoleD0D4437D",
@@ -581,84 +533,18 @@
           ]
         },
         "Runtime": "nodejs22.x",
-        "Timeout": 25
+        "Timeout": 30
       },
       "DependsOn": [
         "HarnessAPIGetStatusServiceRoleDefaultPolicyDCACFB79",
         "HarnessAPIGetStatusServiceRoleD0D4437D"
       ]
     },
-    "PrivateHeaderAPIAuthorizerServiceRole1F5B2876": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              ]
-            ]
-          }
-        ]
-      }
-    },
-    "PrivateHeaderAPIAuthorizerD80B0EC4": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "543495ee33de127262be6a53ce2267a37e9d0dd6af24c1051511f39719746c39.zip"
-        },
-        "Environment": {
-          "Variables": {
-            "REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON": "{\"x-api-key\":[\"1234567890\"]}",
-            "REQUIRED_HEADERS_REGEX_VALUES_JSON": "{\"x-request-id\":\"^[a-f0-9]{32}$\"}",
-            "DISALLOWED_HEADERS_JSON": "[\"x-disallowed-header\"]",
-            "DISALLOWED_HEADER_REGEXES_JSON": "[\"^x-regex-.*$\"]"
-          }
-        },
-        "Handler": "index.handler",
-        "MemorySize": 768,
-        "Role": {
-          "Fn::GetAtt": [
-            "PrivateHeaderAPIAuthorizerServiceRole1F5B2876",
-            "Arn"
-          ]
-        },
-        "Runtime": "nodejs22.x",
-        "Timeout": 5
-      },
-      "DependsOn": [
-        "PrivateHeaderAPIAuthorizerServiceRole1F5B2876"
-      ]
-    },
-    "PrivateHeaderAPIAuthorizerMyTestStackHarnessAPIPrivateApiRequestAuthorizer48A91ABFPermissions5FDDD03E": {
+    "ExistingAPIAuthorizerMyTestStackHarnessAPIExistingApiRequestAuthorizerB3FB9FFAPermissions60210A4C": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "PrivateHeaderAPIAuthorizerD80B0EC4",
-            "Arn"
-          ]
-        },
+        "FunctionName": "arn:aws:lambda:eu-west-2:1234567890:function:ExistingAPIAuthorizer",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Join": [
@@ -674,7 +560,7 @@
               },
               "/authorizers/",
               {
-                "Ref": "HarnessAPIPrivateApiRequestAuthorizerD5AB667B"
+                "Ref": "HarnessAPIExistingApiRequestAuthorizerE800008E"
               }
             ]
           ]
