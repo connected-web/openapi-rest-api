@@ -490,6 +490,6 @@ Please raise an issue on GitHub if you have any questions, or if you would like 
 
 Released under ISC License
 
-Copyright 2023 Connected Web
+Copyright 2025 Connected Web (since 2023)
 
 See [LICENSE.md](./LICENSE.md) for more information.
