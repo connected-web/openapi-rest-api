@@ -7,6 +7,7 @@ import { Template } from 'aws-cdk-lib/assertions'
 import { HarnessAPIStack } from './harness/HarnessAPI'
 
 import fs from 'fs'
+import { expect } from 'chai'
 
 function getTemplate (): Template {
   const app = new cdk.App()
@@ -97,6 +98,31 @@ function getTemplateWithCustomLambdaProps (): Template {
   })
   const template = Template.fromStack(stack)
   fs.writeFileSync('src/tests/template-with-custom-props.json', JSON.stringify(template, null, 2))
+  return template
+}
+
+function getTemplateWithExistingAuthorizerArn (): Template {
+  const app = new cdk.App()
+  const stack = new HarnessAPIStack(app, 'MyTestStack', {
+    env: {
+      account: '1234567890',
+      region: 'eu-west-2'
+    }
+  },
+  {
+    hostedZoneDomain: 'dummy.domain.name',
+    serviceDataBucketName: 'test-stack-stub-bucket-name',
+    identity: {
+      Verifiers: []
+    },
+    stageName: '2024-02-14',
+    additionalCorsHeaders: [
+      'x-continuation-token'
+    ],
+    authorizerARN: 'arn:aws:lambda:eu-west-2:1234567890:function:ExistingAPIAuthorizer'
+  })
+  const template = Template.fromStack(stack)
+  fs.writeFileSync('src/tests/template-with-existing-authorizer.json', JSON.stringify(template, null, 2))
   return template
 }
 
@@ -198,5 +224,23 @@ describe('REST API using Harness as Test Bed with custom Lambda props', () => {
       Runtime: 'nodejs22.x',
       Timeout: 30
     })
+  })
+})
+
+describe('REST API using Harness as Test Bed with ExistingAPIAuthorizer ARN', () => {
+  let template: Template
+
+  before(() => {
+    template = getTemplateWithExistingAuthorizerArn()
+  })
+
+  it('Creates ExistingAPIAuthorizer RequestAuthorizer with correct handler', () => {
+    const resources = template.findResources('AWS::ApiGateway::Authorizer')
+    const authorizer = Object.values(resources)[0]
+    expect(authorizer.Properties.Type).to.equal('REQUEST')
+    expect(authorizer.Properties.IdentitySource).to.equal('method.request.header.Authorization')
+    expect(authorizer.Properties.Name).to.include('ExistingApiRequestAuthorizer')
+    expect(authorizer.Properties.AuthorizerUri).to.be.a('string')
+    expect(authorizer.Properties.AuthorizerUri).to.include('arn:aws:lambda:eu-west-2:1234567890:function:ExistingAPIAuthorizer')
   })
 })

@@ -19,6 +19,7 @@ export interface StackParameters {
   stageName: string
   additionalCorsHeaders: string[]
   customLambdaProps?: NodejsFunctionProps
+  authorizerARN?: string
 }
 
 export class HarnessAPIStack extends cdk.Stack {
@@ -40,6 +41,7 @@ export class HarnessAPIStack extends cdk.Stack {
       HostedZoneDomain: config.hostedZoneDomain,
       Verifiers: config?.identity?.Verifiers ?? [],
       HeaderAuthorizer: config?.identity?.HeaderAuthorizer,
+      AuthorizerARN: config?.authorizerARN,
       StageName: config.stageName,
       AdditionalCORSHeaders: config.additionalCorsHeaders
     }, sharedResources)
