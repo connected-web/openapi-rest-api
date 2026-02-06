@@ -1,6 +1,6 @@
 {
   "name": "openapi-rest-api",
-  "version": "0.6.4",
+  "version": "0.7.1",
   "scripts": {
     "build": "npx tsc",
     "test": "ts-standard && mocha",
