@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const readVersion = (filePath: string): string => {
   const raw = fs.readFileSync(filePath, 'utf-8')
@@ -9,7 +10,8 @@ const readVersion = (filePath: string): string => {
 
 describe('Version consistency', () => {
   it('keeps workspace package versions aligned', () => {
-    const repoRoot = path.resolve(__dirname, '../../../../')
+    const here = path.dirname(fileURLToPath(import.meta.url))
+    const repoRoot = path.resolve(here, '../../../../')
     const rootVersion = readVersion(path.join(repoRoot, 'package.json'))
     const libraryVersion = readVersion(path.join(repoRoot, 'library', 'package.json'))
     const examplesVersion = readVersion(path.join(repoRoot, 'examples', 'package.json'))
