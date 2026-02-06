@@ -32,8 +32,7 @@ export default class OpenAPIFunction {
     runtime: Runtime.NODEJS_LATEST,
     handler: 'handler',
     bundling: {
-      minify: true,
-      nodeModules: ['aws-sdk']
+      minify: true
     }
   }
 

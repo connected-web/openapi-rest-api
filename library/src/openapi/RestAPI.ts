@@ -188,8 +188,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
         handler: 'handler',
         entry: entryFilePath,
         bundling: {
-          minify: true,
-          externalModules: ['aws-sdk']
+          minify: true
         },
         environment: {
           AUTH_VERIFIERS_JSON: JSON.stringify(props.Verifiers)
@@ -214,8 +213,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
         handler: 'handler',
         entry: entryFilePath,
         bundling: {
-          minify: true,
-          externalModules: ['aws-sdk']
+          minify: true
         },
         environment: {
           REQUIRED_HEADERS_WITH_ALLOWED_VALUES_JSON: JSON.stringify(props.HeaderAuthorizer.requiredHeadersWithAllowedValues ?? {}),

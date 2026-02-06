@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { describe, it, before } from 'mocha'
+import { describe, it, beforeAll } from 'vitest'
 
 import path from 'path'
 import * as cdk from 'aws-cdk-lib'
@@ -44,7 +44,7 @@ class StubEndpointWithRestSignature extends StubEndpoint {
 
 describe('Rest Signatures', () => {
   let api: OpenAPIRestAPI<StubResources>
-  before(() => {
+  beforeAll(() => {
     process.env.CREATE_CNAME_RECORD = 'true'
     const app = new cdk.App()
     const stack = new cdk.Stack(app, 'MyTestStack', {

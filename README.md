@@ -322,10 +322,17 @@ You will likely want pre-deployment tests in place to ensure your stack builds c
 
 See the [tests/api-stack.test.ts](./examples/src/tests/api-stack.test.ts) file for an example.
 
+Tests are run with `vitest`, and linting is handled via `eslint`.
+
 ### Security Notes
 
-- This repo currently uses AWS SDK v2 in the examples. If you use v2, validate the `AWS_REGION` value before constructing SDK clients.
-- A full migration to AWS SDK v3 is planned as a separate change.
+- The examples use AWS SDK v3; ensure `AWS_REGION` is set to a valid region before constructing SDK clients.
+
+### Breaking Changes (0.8.0)
+
+- Test runner migrated from Mocha to Vitest.
+- Linting migrated from ts-standard to ESLint.
+- Examples migrated from AWS SDK v2 to v3.
 
 ## Design Considerations
 

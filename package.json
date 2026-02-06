@@ -1,6 +1,6 @@
 {
   "name": "@connected-web/openapi-rest-api",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "An AWS-CDK library for building very cheap and extremely scalable OpenAPI documented APIs using AWS API Gateway, and AWS Lambda.",
   "main": "library/dist/PackageIndex.js",
   "types": "library/dist/PackageIndex.d.ts",
@@ -33,6 +33,9 @@
   ],
   "devDependencies": {
     "@types/semver": "^7.7.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.39.2",
     "lerna": "^9.0.3",
     "semver": "^7.7.4"
   },

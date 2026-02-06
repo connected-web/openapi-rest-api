@@ -1,31 +1,32 @@
 {
   "name": "openapi-rest-api",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "scripts": {
     "build": "npx tsc",
-    "test": "ts-standard && mocha",
-    "test:unit": "mocha 'src/tests/unit/**/*.test.ts'",
-    "test:library": "mocha 'src/tests/library/**/*.test.ts'",
-    "lint": "ts-standard",
-    "lint:fix": "ts-standard --fix"
+    "test": "eslint . --ext .ts && vitest run",
+    "test:unit": "vitest run --dir src/tests/unit",
+    "test:library": "vitest run --dir src/tests/library",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
   },
   "author": "Connected Web",
   "license": "ISC",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.152",
     "@types/chai": "^5.0.0",
-    "@types/mocha": "^10.0.9",
     "@types/node": "^24.5.2",
     "@types/sinon": "^17.0.3",
     "aws-cdk": "^2.1105.0",
     "chai": "^5.1.2",
     "esbuild": "^0.25.10",
-    "mocha": "^11.7.5",
+    "eslint": "^9.39.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
     "openapi-client-axios": "^7.8.0",
     "openapi-client-axios-typegen": "^7.8.0",
     "sinon": "^21.0.1",
-    "ts-standard": "^12.0.2",
-    "tsx": "^4.19.1"
+    "tsx": "^4.19.1",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@aws-sdk/client-api-gateway": "^3.984.0",
@@ -38,15 +39,8 @@
     "ajv-formats": "^3.0.1",
     "aws-cdk-lib": "^2.237.1",
     "aws-jwt-verify": "^5.1.0",
-    "aws-sdk": "^2.1693.0",
     "axios": "^1.12.2",
     "constructs": "^10.4.2",
     "source-map-support": "^0.5.21"
-  },
-  "ts-standard": {
-    "ignore": [
-      "cdk.out",
-      "dist"
-    ]
   }
 }
