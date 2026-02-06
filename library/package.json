@@ -2,7 +2,7 @@
   "name": "openapi-rest-api",
   "version": "0.8.0",
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx tsc -p tsconfig.build.json",
     "test": "eslint . --ext .ts && vitest run",
     "test:unit": "vitest run --dir src/tests/unit",
     "test:library": "vitest run --dir src/tests/library",
