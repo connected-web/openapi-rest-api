@@ -9,6 +9,7 @@ jobs:
   build:
     name: Publish Package
     runs-on: ubuntu-latest
+    environment: public
     permissions:
       contents: read
       id-token: write
