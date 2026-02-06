@@ -33,7 +33,10 @@
   ],
   "devDependencies": {
     "@types/semver": "^7.7.1",
-    "lerna": "^7.1.4",
+    "lerna": "^9.0.3",
     "semver": "^7.7.4"
+  },
+  "overrides": {
+    "tar": "7.5.7"
   }
 }
