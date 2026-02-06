@@ -3,27 +3,29 @@ name: Publish Package
 on:
   release:
     types:
-      - released
+      - published
 
 jobs:
   build:
     name: Publish Package
     runs-on: ubuntu-latest
+    environment: public
     permissions:
-      packages: write
       contents: read
+      id-token: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
   
       - name: Use Node JS LTS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: 23.x
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       
       - name: Build TypeScript
         run: npm run build
@@ -42,7 +44,5 @@ jobs:
             exit 1
           fi
           
-      - uses: JS-DevTools/npm-publish@v2
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: public
+      - name: Publish to npm (trusted publishing)
+        run: npm publish --provenance --access public
