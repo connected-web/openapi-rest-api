@@ -9,8 +9,18 @@ import { ApiPayloadType } from '../../models/ApiPayloadTypes'
 import S3 from 'aws-sdk/clients/s3'
 import { httpStatusCodes, lambdaResponse } from '../../helpers/Response'
 
+const region = process.env.AWS_REGION ?? ''
+const isValidRegion = (value: string): boolean => {
+  // Basic allowlist pattern for AWS regions (e.g., us-east-1, eu-west-2).
+  return /^[a-z]{2,3}-[a-z0-9-]+-\d+$/.test(value)
+}
+
+if (!isValidRegion(region)) {
+  throw new Error(`Invalid AWS region: "${region}"`)
+}
+
 const s3Client = new S3({
-  region: process.env.AWS_REGION,
+  region,
   maxRetries: 3
 })
 
