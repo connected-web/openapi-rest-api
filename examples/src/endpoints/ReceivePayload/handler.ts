@@ -6,7 +6,7 @@ import {
 import { ApiResponseType } from '../../models/ApiResponseTypes'
 import { ApiPayloadType } from '../../models/ApiPayloadTypes'
 
-import S3 from 'aws-sdk/clients/s3'
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { httpStatusCodes, lambdaResponse } from '../../helpers/Response'
 
 const region = process.env.AWS_REGION ?? ''
@@ -19,9 +19,9 @@ if (!isValidRegion(region)) {
   throw new Error(`Invalid AWS region: "${String(region)}"`)
 }
 
-const s3Client = new S3({
+const s3Client = new S3Client({
   region,
-  maxRetries: 3
+  maxAttempts: 3
 })
 
 /* This handler is executed by AWS Lambda when the endpoint is invoked */
@@ -45,12 +45,12 @@ export async function handler (event: APIGatewayProxyEvent): Promise<APIGatewayP
 
   try {
     const payloadBody = JSON.stringify(payload)
-    await s3Client.putObject({
+    await s3Client.send(new PutObjectCommand({
       Bucket: process.env.SERVICE_DATA_BUCKET_NAME ?? '',
       Key: `${colorParam}/${pathParam}.json`,
       Body: payloadBody,
       ContentType: 'application/json'
-    }).promise()
+    }))
     console.log('S3 putObject result:', { pathParam, payloadBody: `${payloadBody.length} bytes` })
   } catch (ex) {
     const error = ex as Error

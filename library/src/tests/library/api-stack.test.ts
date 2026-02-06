@@ -1,4 +1,4 @@
-import { describe, it, before } from 'mocha'
+import { describe, it, beforeAll } from 'vitest'
 
 import * as cdk from 'aws-cdk-lib'
 import { Duration } from 'aws-cdk-lib'
@@ -91,8 +91,7 @@ function getTemplateWithCustomLambdaProps (): Template {
       runtime: Runtime.NODEJS_LATEST,
       handler: 'index.handler',
       bundling: {
-        minify: true,
-        nodeModules: ['aws-sdk']
+        minify: true
       }
     }
   })
@@ -129,7 +128,7 @@ function getTemplateWithExistingAuthorizerArn (): Template {
 describe('REST API using Harness as Test Bed', () => {
   let template: Template
 
-  before(() => {
+  beforeAll(() => {
     template = getTemplate()
   })
 
@@ -183,7 +182,7 @@ describe('REST API using Harness as Test Bed', () => {
 describe('REST API using Harness as Test Bed with custom Header Authorizer props', () => {
   let template: Template
 
-  before(() => {
+  beforeAll(() => {
     template = getTemplateWithCustomHeaderAuthorizerProps()
   })
 
@@ -213,7 +212,7 @@ describe('REST API using Harness as Test Bed with custom Header Authorizer props
 describe('REST API using Harness as Test Bed with custom Lambda props', () => {
   let template: Template
 
-  before(() => {
+  beforeAll(() => {
     template = getTemplateWithCustomLambdaProps()
   })
 
@@ -230,7 +229,7 @@ describe('REST API using Harness as Test Bed with custom Lambda props', () => {
 describe('REST API using Harness as Test Bed with ExistingAPIAuthorizer ARN', () => {
   let template: Template
 
-  before(() => {
+  beforeAll(() => {
     template = getTemplateWithExistingAuthorizerArn()
   })
 

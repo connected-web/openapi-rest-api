@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
+import { describe, it, beforeEach, afterEach } from 'vitest'
 import sinon from 'sinon'
 import { checkHeadersForPolicyMatch } from '../../openapi/HeaderAuthorizer'
 
