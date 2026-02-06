@@ -66,7 +66,7 @@ const main = async (): Promise<void> => {
   if (!repo) throw new Error('GITHUB_REPOSITORY not set')
   if (!token) throw new Error('GITHUB_TOKEN not set')
 
-  const repoRoot = path.resolve(__dirname, '../../../..')
+  const repoRoot = path.resolve(__dirname, '..')
   const rootPkg = readJson<{ version?: string }>(path.join(repoRoot, 'package.json'))
   const current = String(rootPkg.version ?? '').trim()
   if (!current) throw new Error('package.json version is missing')
