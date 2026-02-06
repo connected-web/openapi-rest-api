@@ -32,6 +32,8 @@
     "examples"
   ],
   "devDependencies": {
-    "lerna": "^7.1.4"
+    "@types/semver": "^7.7.1",
+    "lerna": "^7.1.4",
+    "semver": "^7.7.4"
   }
 }
