@@ -704,11 +704,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "3f5b1306b0f4e5844431bfafe08605e7d85f3c574de5671b1669a53fd0d73170.zip"
+          "S3Key": "1c044df2b01d3d87f2610187fa5204c31ea46aadda313a6f72fb0ba093bdd5dc.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-24T20:05:35.168Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-06T11:16:25.880Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -809,11 +809,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "1051807ed656eee5143e825180f144789013ab8f04a2f849f55ad8a73d1a9bb4.zip"
+          "S3Key": "e03b1aa0a52d88c6a8f355f1e24dd46128146d4e08862bb2901eb3d7f37ed3ba.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-09-24T20:06:09.750Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-06T11:16:26.366Z\"}",
             "SERVICE_DATA_BUCKET_NAME": {
               "Ref": "ExampleServiceBucketFDFBB652"
             }

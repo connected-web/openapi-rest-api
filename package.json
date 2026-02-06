@@ -8,9 +8,9 @@
     "access": "public"
   },
   "scripts": {
-    "lint": "lerna run lint",
-    "lint:fix": "lerna run lint:fix",
-    "test": "lerna run test"
+    "lint": "npm -w library run lint && npm -w examples run lint",
+    "lint:fix": "npm -w library run lint:fix && npm -w examples run lint:fix",
+    "test": "npm -w library run test && npm -w examples run test"
   },
   "files": [
     "library/dist",
@@ -36,7 +36,6 @@
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
     "eslint": "^9.39.2",
-    "lerna": "^9.0.3",
     "semver": "^7.7.4"
   },
   "overrides": {

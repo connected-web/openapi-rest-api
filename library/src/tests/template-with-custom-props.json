@@ -312,34 +312,6 @@
         }
       }
     },
-    "HarnessAPIharnessapidomainname6617E37E": {
-      "Type": "AWS::ApiGateway::DomainName",
-      "Properties": {
-        "DomainName": "harness-api.dummy.domain.name",
-        "EndpointConfiguration": {
-          "Types": [
-            "REGIONAL"
-          ]
-        },
-        "RegionalCertificateArn": {
-          "Ref": "HarnessAPIharnessapidummydomainnameF3907552"
-        }
-      }
-    },
-    "HarnessAPIharnessapidomainnameMapMyTestStackHarnessAPIBD53B374A7665A2C": {
-      "Type": "AWS::ApiGateway::BasePathMapping",
-      "Properties": {
-        "DomainName": {
-          "Ref": "HarnessAPIharnessapidomainname6617E37E"
-        },
-        "RestApiId": {
-          "Ref": "HarnessAPIFE0E1CB0"
-        },
-        "Stage": {
-          "Ref": "HarnessAPIDeploymentStage202402145415D88A"
-        }
-      }
-    },
     "HarnessAPIApiExecutionRoleA38996E4": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -381,42 +353,6 @@
             "Ref": "HarnessAPIApiExecutionRoleA38996E4"
           }
         ]
-      }
-    },
-    "HarnessAPIharnessapidummydomainnameF3907552": {
-      "Type": "AWS::CertificateManager::Certificate",
-      "Properties": {
-        "DomainName": "harness-api.dummy.domain.name",
-        "DomainValidationOptions": [
-          {
-            "DomainName": "harness-api.dummy.domain.name",
-            "HostedZoneId": "DUMMY"
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/Harness API/harness-api.dummy.domain.name"
-          }
-        ],
-        "ValidationMethod": "DNS"
-      }
-    },
-    "HarnessAPIcnamerecord77192307": {
-      "Type": "AWS::Route53::RecordSet",
-      "Properties": {
-        "HostedZoneId": "DUMMY",
-        "Name": "harness-api.dummy.domain.name.",
-        "ResourceRecords": [
-          {
-            "Fn::GetAtt": [
-              "HarnessAPIharnessapidomainname6617E37E",
-              "RegionalDomainName"
-            ]
-          }
-        ],
-        "TTL": "300",
-        "Type": "CNAME"
       }
     },
     "HarnessAPIGetStatusServiceRoleD0D4437D": {
@@ -501,11 +437,11 @@
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-1234567890-eu-west-2",
-          "S3Key": "88d3d9e194a709cc1fbcd602d8e8175366afa3bb998cc388135d3963504b83ef.zip"
+          "S3Key": "6724b42d655c2dbaed23f43728e1196bb5068a956a21b2366869f151748015dc.zip"
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2025-10-31T15:33:23.648Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-06T11:16:21.139Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -576,10 +512,6 @@
           ]
         ]
       }
-    },
-    "HarnessAPIApiUrlB16E1052": {
-      "Description": "The registered URL of the API",
-      "Value": "https://harness-api.dummy.domain.name"
     }
   },
   "Parameters": {
