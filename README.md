@@ -322,6 +322,11 @@ You will likely want pre-deployment tests in place to ensure your stack builds c
 
 See the [tests/api-stack.test.ts](./examples/src/tests/api-stack.test.ts) file for an example.
 
+### Security Notes
+
+- This repo currently uses AWS SDK v2 in the examples. If you use v2, validate the `AWS_REGION` value before constructing SDK clients.
+- A full migration to AWS SDK v3 is planned as a separate change.
+
 ## Design Considerations
 
 ### 🤔 Simplify AWS Lambda API Creation with OpenAPI standards
@@ -464,6 +469,10 @@ graph TD
 
 ## Environment Variables for CI
 
+### AWS_REGION
+
+This should be a valid AWS region (for example: `us-east-1`, `eu-west-2`). The example handlers validate this value before using the AWS SDK v2.
+
 ### CREATE_CNAME_RECORD
 
 If this environment variable is set to `true`, the CDK stack will create a CNAME record in the hosted zone that points to the API Gateway. This is useful if you want to host the API on a custom domain. It is sometimes useful to toggle this  when creating and destroying new resources to avoid CloudFormation conflicts.
@@ -483,6 +492,10 @@ For example:
 ```
 
 ## Contributions and Questions
+
+### Premerge Checks
+
+The `Check PR` workflow includes a premerge check that asserts the root `package.json` version is greater than the latest GitHub release tag. If you are cutting a release, bump versions before opening the PR.
 
 Please raise an issue on GitHub if you have any questions, or if you would like to contribute to the project.
 
