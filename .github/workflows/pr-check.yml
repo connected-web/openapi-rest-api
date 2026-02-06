@@ -51,3 +51,79 @@ jobs:
       env:
         CREATE_CNAME_RECORD: true
         OPENAPI_REST_API_REPORT_SUMMARY: true
+
+  premerge-checks:
+    name: Premerge Checks
+    runs-on: ubuntu-latest
+    needs:
+      - test-library
+      - test-examples
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Use Node JS LTS
+      uses: actions/setup-node@v3
+      with:
+        node-version: 22.x
+
+    - name: Ensure package version is greater than latest release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        node -e "
+        const fs = require('node:fs');
+        const https = require('node:https');
+
+        const repo = process.env.GITHUB_REPOSITORY;
+        const token = process.env.GITHUB_TOKEN;
+        if (!repo) throw new Error('GITHUB_REPOSITORY not set');
+        if (!token) throw new Error('GITHUB_TOKEN not set');
+
+        const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+        const current = String(pkg.version || '').trim();
+        if (!current) throw new Error('package.json version is missing');
+
+        const request = https.request({
+          hostname: 'api.github.com',
+          path: `/repos/${repo}/releases/latest`,
+          headers: {
+            'User-Agent': 'version-check',
+            'Authorization': `token ${token}`,
+            'Accept': 'application/vnd.github+json'
+          }
+        }, res => {
+          let data = '';
+          res.on('data', chunk => { data += chunk; });
+          res.on('end', () => {
+            if (res.statusCode !== 200) {
+              throw new Error(`GitHub API error: ${res.statusCode} ${data}`);
+            }
+            const payload = JSON.parse(data);
+            const latest = String(payload.tag_name || '').replace(/^v/, '').trim();
+            if (!latest) throw new Error('Latest release tag not found');
+
+            const toParts = v => v.split('.').map(n => Number(n));
+            const cmp = (a, b) => {
+              const len = Math.max(a.length, b.length);
+              for (let i = 0; i < len; i++) {
+                const av = a[i] ?? 0;
+                const bv = b[i] ?? 0;
+                if (av > bv) return 1;
+                if (av < bv) return -1;
+              }
+              return 0;
+            };
+
+            const result = cmp(toParts(current), toParts(latest));
+            if (result <= 0) {
+              throw new Error(`package.json version (${current}) must be greater than latest release (${latest})`);
+            }
+            console.log(`OK: package.json version (${current}) is greater than latest release (${latest})`);
+          });
+        });
+
+        request.on('error', err => { throw err; });
+        request.end();
+        "
