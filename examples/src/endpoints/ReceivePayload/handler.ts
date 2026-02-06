@@ -16,7 +16,7 @@ const isValidRegion = (value: string): boolean => {
 }
 
 if (!isValidRegion(region)) {
-  throw new Error(`Invalid AWS region: "${region}"`)
+  throw new Error(`Invalid AWS region: "${String(region)}"`)
 }
 
 const s3Client = new S3({
