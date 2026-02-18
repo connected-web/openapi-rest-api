@@ -708,7 +708,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-06T11:16:25.880Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-18T11:28:47.734Z\"}"
           }
         },
         "Handler": "index.handler",
@@ -813,7 +813,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-06T11:16:26.366Z\"}",
+            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-18T11:28:48.111Z\"}",
             "SERVICE_DATA_BUCKET_NAME": {
               "Ref": "ExampleServiceBucketFDFBB652"
             }

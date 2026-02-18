@@ -505,7 +505,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-06T11:16:20.649Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-18T11:28:43.519Z\"}"
           }
         },
         "Handler": "index.handler",
