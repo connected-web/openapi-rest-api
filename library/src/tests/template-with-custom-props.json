@@ -20,7 +20,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "ManagedPolicyArns": [
           {
@@ -84,7 +84,7 @@
         "RestApiId": {
           "Ref": "HarnessAPIFE0E1CB0"
         },
-        "StageName": "2024-02-14"
+        "StageName": "<DATE>"
       },
       "DependsOn": [
         "HarnessAPIAccount61F2DFEB"
@@ -276,7 +276,7 @@
                 {
                   "Ref": "AWS::Partition"
                 },
-                ":apigateway:eu-west-2:lambda:path/2015-03-31/functions/",
+                ":apigateway:eu-west-2:lambda:path/<DATE>/functions/",
                 {
                   "Fn::GetAtt": [
                     "HarnessAPIGetStatus3D94D0B2",
@@ -325,7 +325,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         }
       }
     },
@@ -345,7 +345,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "PolicyName": "HarnessAPIApiExecutionRoleDefaultPolicyF5C1071A",
         "Roles": [
@@ -368,7 +368,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "ManagedPolicyArns": [
           {
@@ -422,7 +422,7 @@
               ]
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "PolicyName": "HarnessAPIGetStatusServiceRoleDefaultPolicyDCACFB79",
         "Roles": [
@@ -441,7 +441,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-18T11:28:43.965Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"<ISO_TIMESTAMP>\"}"
           }
         },
         "Handler": "index.handler",

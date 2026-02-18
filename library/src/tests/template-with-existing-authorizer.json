@@ -4,7 +4,7 @@
       "Type": "AWS::ApiGateway::Authorizer",
       "Properties": {
         "AuthorizerResultTtlInSeconds": 300,
-        "AuthorizerUri": "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:1234567890:function:ExistingAPIAuthorizer/invocations",
+        "AuthorizerUri": "arn:aws:apigateway:eu-west-2:lambda:path/<DATE>/functions/arn:aws:lambda:eu-west-2:1234567890:function:ExistingAPIAuthorizer/invocations",
         "IdentitySource": "method.request.header.Authorization",
         "Name": "MyTestStackHarnessAPIExistingApiRequestAuthorizerB3FB9FFA",
         "RestApiId": {
@@ -33,7 +33,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "ManagedPolicyArns": [
           {
@@ -97,7 +97,7 @@
         "RestApiId": {
           "Ref": "HarnessAPIFE0E1CB0"
         },
-        "StageName": "2024-02-14"
+        "StageName": "<DATE>"
       },
       "DependsOn": [
         "HarnessAPIAccount61F2DFEB"
@@ -292,7 +292,7 @@
                 {
                   "Ref": "AWS::Partition"
                 },
-                ":apigateway:eu-west-2:lambda:path/2015-03-31/functions/",
+                ":apigateway:eu-west-2:lambda:path/<DATE>/functions/",
                 {
                   "Fn::GetAtt": [
                     "HarnessAPIGetStatus3D94D0B2",
@@ -341,7 +341,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         }
       }
     },
@@ -361,7 +361,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "PolicyName": "HarnessAPIApiExecutionRoleDefaultPolicyF5C1071A",
         "Roles": [
@@ -384,7 +384,7 @@
               }
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "ManagedPolicyArns": [
           {
@@ -438,7 +438,7 @@
               ]
             }
           ],
-          "Version": "2012-10-17"
+          "Version": "<DATE>"
         },
         "PolicyName": "HarnessAPIGetStatusServiceRoleDefaultPolicyDCACFB79",
         "Roles": [
@@ -457,7 +457,7 @@
         },
         "Environment": {
           "Variables": {
-            "STATUS_INFO": "{\"deploymentTime\":\"2026-02-18T11:28:44.422Z\"}"
+            "STATUS_INFO": "{\"deploymentTime\":\"<ISO_TIMESTAMP>\"}"
           }
         },
         "Handler": "index.handler",

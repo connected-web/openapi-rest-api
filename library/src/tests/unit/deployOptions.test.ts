@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
 
 import { OpenAPIRestAPI } from '../../PackageIndex'
+import { writeNormalizedTemplate } from '../templateOutput'
 
 describe('DeployOptions passthrough', () => {
   it('passes deploy stage variables through to API Gateway stage', () => {
@@ -26,6 +27,7 @@ describe('DeployOptions passthrough', () => {
     }, {})
 
     const template = Template.fromStack(stack)
+    writeNormalizedTemplate('src/tests/template-with-deploy-options.json', template)
 
     template.hasResourceProperties('AWS::ApiGateway::Stage', {
       Variables: {
