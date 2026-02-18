@@ -4,7 +4,7 @@ import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
 import { ExampleAPIStack } from '../ExampleAPI'
 
-import fs from 'fs'
+import { writeNormalizedTemplate } from './helpers/templateOutput'
 
 const getTemplate = (): Template => {
   const app = new cdk.App()
@@ -22,7 +22,7 @@ const getTemplate = (): Template => {
     }
   })
   const template = Template.fromStack(stack)
-  fs.writeFileSync('src/tests/template.json', JSON.stringify(template, null, 2))
+  writeNormalizedTemplate('src/tests/template.json', template)
   return template
 }
 
