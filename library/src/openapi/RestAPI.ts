@@ -1,6 +1,6 @@
 import { CfnOutput, Duration } from 'aws-cdk-lib'
 import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam'
-import { RequestAuthorizer, LambdaIntegration, IdentitySource, RestApi, Cors, IResource, Resource, MethodOptions } from 'aws-cdk-lib/aws-apigateway'
+import { RequestAuthorizer, LambdaIntegration, IdentitySource, RestApi, Cors, IResource, Resource, MethodOptions, StageOptions } from 'aws-cdk-lib/aws-apigateway'
 import { HttpMethod, IFunction, Runtime } from 'aws-cdk-lib/aws-lambda'
 import { Construct } from 'constructs'
 import { CnameRecord, HostedZone } from 'aws-cdk-lib/aws-route53'
@@ -72,6 +72,13 @@ export interface OpenAPIRestAPIProps {
    * If provided, the API will use this stage name instead of the default 'v1'.
    */
   StageName?: string
+  /**
+   * If provided, these options will be merged into the API Gateway stage configuration.
+   * Useful for passing stage variables to shared authorizer Lambdas, or for configuring
+   * throttling, logging, and tracing at the stage level.
+   * Note: stageName is excluded here as it is controlled by the StageName property.
+   */
+  DeployOptions?: Omit<StageOptions, 'stageName'>
   /**
    * Additional headers to include in CORS responses.
    */
@@ -245,6 +252,7 @@ export default class OpenAPIRestAPI<R> extends Construct {
     const api = new RestApi(this, id, {
       description: props.Description,
       deployOptions: {
+        ...props.DeployOptions,
         stageName: props.StageName ?? 'v1'
       },
       defaultMethodOptions,

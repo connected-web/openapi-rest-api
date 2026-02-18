@@ -5,9 +5,8 @@ import { Duration } from 'aws-cdk-lib'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { Template } from 'aws-cdk-lib/assertions'
 import { HarnessAPIStack } from './harness/HarnessAPI'
-
-import fs from 'fs'
 import { expect } from 'chai'
+import { writeNormalizedTemplate } from '../helpers/templateOutput'
 
 function getTemplate (): Template {
   const app = new cdk.App()
@@ -29,7 +28,6 @@ function getTemplate (): Template {
     ]
   })
   const template = Template.fromStack(stack)
-  fs.writeFileSync('src/tests/template.json', JSON.stringify(template, null, 2))
   return template
 }
 
@@ -63,7 +61,7 @@ function getTemplateWithCustomHeaderAuthorizerProps (): Template {
     ]
   })
   const template = Template.fromStack(stack)
-  fs.writeFileSync('src/tests/template-with-custom-header-authorizer.json', JSON.stringify(template, null, 2))
+  writeNormalizedTemplate('src/tests/template-with-custom-header-authorizer.json', template)
   return template
 }
 
@@ -96,7 +94,7 @@ function getTemplateWithCustomLambdaProps (): Template {
     }
   })
   const template = Template.fromStack(stack)
-  fs.writeFileSync('src/tests/template-with-custom-props.json', JSON.stringify(template, null, 2))
+  writeNormalizedTemplate('src/tests/template-with-custom-props.json', template)
   return template
 }
 
@@ -121,7 +119,7 @@ function getTemplateWithExistingAuthorizerArn (): Template {
     authorizerARN: 'arn:aws:lambda:eu-west-2:1234567890:function:ExistingAPIAuthorizer'
   })
   const template = Template.fromStack(stack)
-  fs.writeFileSync('src/tests/template-with-existing-authorizer.json', JSON.stringify(template, null, 2))
+  writeNormalizedTemplate('src/tests/template-with-existing-authorizer.json', template)
   return template
 }
 
