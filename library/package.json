@@ -1,6 +1,6 @@
 {
   "name": "openapi-rest-api",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "scripts": {
     "build": "npx tsc -p tsconfig.build.json",
     "test": "eslint . --ext .ts && vitest run",

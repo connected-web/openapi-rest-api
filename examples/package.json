@@ -1,6 +1,6 @@
 {
   "name": "openapi-rest-api-example",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "scripts": {
     "test": "eslint . --ext .ts && npm run test:example",
     "test:example": "vitest run --dir src/tests",
