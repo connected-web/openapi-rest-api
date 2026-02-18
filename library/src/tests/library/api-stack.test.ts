@@ -6,7 +6,7 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { Template } from 'aws-cdk-lib/assertions'
 import { HarnessAPIStack } from './harness/HarnessAPI'
 import { expect } from 'chai'
-import { writeNormalizedTemplate } from '../templateOutput'
+import { writeNormalizedTemplate } from '../helpers/templateOutput'
 
 function getTemplate (): Template {
   const app = new cdk.App()

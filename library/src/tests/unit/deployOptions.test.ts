@@ -4,7 +4,7 @@ import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
 
 import { OpenAPIRestAPI } from '../../PackageIndex'
-import { writeNormalizedTemplate } from '../templateOutput'
+import { writeNormalizedTemplate } from '../helpers/templateOutput'
 
 describe('DeployOptions passthrough', () => {
   it('passes deploy stage variables through to API Gateway stage', () => {
