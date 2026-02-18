@@ -28,7 +28,6 @@ function getTemplate (): Template {
     ]
   })
   const template = Template.fromStack(stack)
-  writeNormalizedTemplate('src/tests/template.json', template)
   return template
 }
 
