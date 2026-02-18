@@ -7,8 +7,11 @@ import { OpenAPIRestAPI } from '../../PackageIndex'
 
 describe('DeployOptions passthrough', () => {
   it('passes deploy stage variables through to API Gateway stage', () => {
+    process.env.CREATE_CNAME_RECORD = 'false'
     const app = new cdk.App()
-    const stack = new cdk.Stack(app, 'DeployOptionsStack')
+    const stack = new cdk.Stack(app, 'DeployOptionsStack', {
+      env: { account: '123456789012', region: 'us-east-1' }
+    })
 
     new OpenAPIRestAPI(stack, 'TestApi', {
       Description: 'Deploy options test API',
@@ -32,8 +35,11 @@ describe('DeployOptions passthrough', () => {
   })
 
   it('keeps StageName precedence even if stageName is forced into DeployOptions at runtime', () => {
+    process.env.CREATE_CNAME_RECORD = 'false'
     const app = new cdk.App()
-    const stack = new cdk.Stack(app, 'DeployOptionsStageNamePrecedenceStack')
+    const stack = new cdk.Stack(app, 'DeployOptionsStageNamePrecedenceStack', {
+      env: { account: '123456789012', region: 'us-east-1' }
+    })
 
     new OpenAPIRestAPI(stack, 'TestApi', {
       Description: 'Deploy options stage name precedence test API',
