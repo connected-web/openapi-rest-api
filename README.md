@@ -486,7 +486,15 @@ If this environment variable is set to `true`, the CDK stack will create a CNAME
 
 ### OPENAPI_REST_API_REPORT_SUMMARY
 
-If this environment variable is set to `true`, the CDK stack will report the API Gateway URL and the OpenAPI specification URL. This is useful if you want to quickly access the API Gateway URL and the OpenAPI specification URL after deployment. It also summarises a table of endpoints, which is useful documentation for the API that you can copy and paste out of the `GITHUB_STEP_SUMMARY`.
+If this environment variable is set to `true`, the CDK stack will generate a markdown deployment summary containing endpoint documentation.
+
+### OPENAPI_REST_API_REPORT_OUTPUT_PATH
+
+If this environment variable is set, the generated markdown deployment summary will be written to this path. This is the recommended way to consume the summary from CI/CD flows.
+
+### OPENAPI_REST_API_REPORT_DISABLE_GITHUB_STEP_SUMMARY
+
+If this environment variable is set to `true`, `openapi-rest-api` will not append to `GITHUB_STEP_SUMMARY`. This lets consumers opt-in to writing job summaries themselves using the document from `OPENAPI_REST_API_REPORT_OUTPUT_PATH`.
 
 For example:
 
@@ -496,6 +504,9 @@ For example:
         env:
           CREATE_CNAME_RECORD: true
           OPENAPI_REST_API_REPORT_SUMMARY: true
+          OPENAPI_REST_API_REPORT_OUTPUT_PATH: deployment-summary.md
+      - name: Publish deployment summary (optional)
+        run: cat deployment-summary.md >> "$GITHUB_STEP_SUMMARY"
 ```
 
 ## Contributions and Questions
