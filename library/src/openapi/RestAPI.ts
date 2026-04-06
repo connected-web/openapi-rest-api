@@ -472,20 +472,63 @@ export default class OpenAPIRestAPI<R> extends Construct {
     return summary.join('\n')
   }
 
+  private shouldReportSummary (): boolean {
+    return process.env.OPENAPI_REST_API_REPORT_SUMMARY !== undefined
+  }
+
+  private shouldWriteGithubStepSummary (): boolean {
+    return process.env.GITHUB_STEP_SUMMARY !== undefined &&
+      process.env.OPENAPI_REST_API_REPORT_DISABLE_GITHUB_STEP_SUMMARY === undefined
+  }
+
+  private writeReportDocument (markdownSummary: string): void {
+    if (process.env.OPENAPI_REST_API_REPORT_OUTPUT_PATH === undefined) {
+      return
+    }
+
+    fs.writeFileSync(process.env.OPENAPI_REST_API_REPORT_OUTPUT_PATH, `${markdownSummary}\n`)
+  }
+
+  private appendUniqueContent (filePath: string, content: string): boolean {
+    const normalizedContent = content.trim()
+    let existingContent = ''
+
+    try {
+      existingContent = fs.readFileSync(filePath, 'utf8')
+    } catch (ex) {
+      const error = ex as NodeJS.ErrnoException
+      if (error.code !== 'ENOENT') {
+        throw error
+      }
+    }
+
+    if (existingContent.includes(normalizedContent)) {
+      return false
+    }
+
+    const hasExistingContent = existingContent.trim().length > 0
+    const output = hasExistingContent ? `\n\n${normalizedContent}\n` : `${normalizedContent}\n`
+    fs.writeFileSync(filePath, output, { flag: 'a' })
+    return true
+  }
+
   report (): void {
     console.log('OpenAPIRestAPI Routes:', Object.values(this.routeMap).map(route => route.path))
 
-    // Update step summary
-    if (process.env.GITHUB_STEP_SUMMARY !== undefined && process.env.OPENAPI_REST_API_REPORT_SUMMARY !== undefined) {
+    if (this.shouldReportSummary()) {
       try {
         const markdownSummary = this.generateReportMarkdown()
+        this.writeReportDocument(markdownSummary)
 
-        console.log('Markdown for Github job summary:\n\n', markdownSummary)
-
-        fs.writeFileSync(process.env.GITHUB_STEP_SUMMARY, markdownSummary, { flag: 'a' })
+        if (this.shouldWriteGithubStepSummary() && process.env.GITHUB_STEP_SUMMARY !== undefined) {
+          const wasWritten = this.appendUniqueContent(process.env.GITHUB_STEP_SUMMARY, markdownSummary)
+          if (!wasWritten) {
+            console.log('Skipped duplicate OpenAPI report for Github step summary.')
+          }
+        }
       } catch (ex) {
         const error = ex as Error
-        console.error('Unable to produce Github step summary:', error.message)
+        console.error('Unable to produce OpenAPI report summary:', error.message)
       }
     }
   }
