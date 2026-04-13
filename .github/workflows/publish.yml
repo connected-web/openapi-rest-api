@@ -43,8 +43,9 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           TAG=${{ steps.release_tag.outputs.tag }}
-          if [ "$VERSION" != "$TAG" ]; then
-            echo "Error: Release tag '$TAG' does not match package version '$VERSION'"
+          NORMALIZED_TAG=${TAG#v}
+          if [ "$VERSION" != "$NORMALIZED_TAG" ]; then
+            echo "Error: Release tag '$TAG' (normalized: '$NORMALIZED_TAG') does not match package version '$VERSION'"
             exit 1
           fi
 
