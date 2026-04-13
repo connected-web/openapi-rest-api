@@ -41,11 +41,15 @@ jobs:
 
       - name: Verify tag matches version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          VERSION=$(node -p "require('semver').clean(require('./package.json').version)")
           TAG=${{ steps.release_tag.outputs.tag }}
-          NORMALIZED_TAG=${TAG#v}
-          if [ "$VERSION" != "$NORMALIZED_TAG" ]; then
-            echo "Error: Release tag '$TAG' (normalized: '$NORMALIZED_TAG') does not match package version '$VERSION'"
+          TAG_VERSION=$(node -p "require('semver').clean(process.argv[1])" "$TAG")
+          if [ -z "$VERSION" ] || [ -z "$TAG_VERSION" ]; then
+            echo "Error: Invalid semver value (tag: '$TAG', package version: '$VERSION')"
+            exit 1
+          fi
+          if [ "$VERSION" != "$TAG_VERSION" ]; then
+            echo "Error: Release tag '$TAG' (version: '$TAG_VERSION') does not match package version '$VERSION'"
             exit 1
           fi
 
