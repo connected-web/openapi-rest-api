@@ -74,9 +74,15 @@ const main = async (): Promise<void> => {
   const latest = await getLatestReleaseTag(repo, token)
   const currentVersion = cleanVersion(current, 'package.json')
   const latestVersion = cleanVersion(latest, 'latest release tag')
-  if (!semver.gt(currentVersion, latestVersion)) {
-    throw new Error(`package.json version (${current}) must be greater than latest release (${latest})`)
+  if (semver.lt(currentVersion, latestVersion)) {
+    throw new Error(`package.json version (${current}) must not be lower than latest release (${latest})`)
   }
+
+  if (semver.eq(currentVersion, latestVersion)) {
+    console.log(`OK: package.json version (${current}) matches latest release (${latest}); no version bump required for this PR`)
+    return
+  }
+
   console.log(`OK: package.json version (${current}) is greater than latest release (${latest})`)
 }
 
