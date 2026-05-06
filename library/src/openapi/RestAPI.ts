@@ -53,6 +53,11 @@ export interface OpenAPIRestAPIProps {
    */
   HostedZoneDomain: string
   /**
+   * If provided, the hosted zone will be resolved by ID rather than by domain name lookup.
+   * Use this when deploying cross-account where a Route53 lookup would target the wrong account.
+   */
+  HostedZoneId?: string
+  /**
    * If provided, the API will create an AWS Cognito-based authorizer, configured with these verifiers.
    */
   Verifiers: Verifier[]
@@ -281,9 +286,14 @@ export default class OpenAPIRestAPI<R> extends Construct {
 
   private createVanityUrl (scope: Construct, props: OpenAPIRestAPIProps): CnameRecord {
     const vanityDomain = `${props.SubDomain}.${props.HostedZoneDomain}`
-    const hostedZone = HostedZone.fromLookup(scope, 'HostedZone', {
-      domainName: props.HostedZoneDomain
-    })
+    const hostedZone = props.HostedZoneId
+      ? HostedZone.fromHostedZoneAttributes(scope, 'HostedZone', {
+        hostedZoneId: props.HostedZoneId,
+        zoneName: props.HostedZoneDomain
+      })
+      : HostedZone.fromLookup(scope, 'HostedZone', {
+        domainName: props.HostedZoneDomain
+      })
 
     const cert = new Certificate(this, vanityDomain, {
       domainName: vanityDomain,
