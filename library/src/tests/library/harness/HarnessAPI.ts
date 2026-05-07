@@ -14,6 +14,7 @@ export interface IdentityConfig {
 
 export interface StackParameters {
   hostedZoneDomain: string
+  hostedZoneId: string
   serviceDataBucketName: string
   identity: IdentityConfig
   stageName: string
@@ -39,6 +40,7 @@ export class HarnessAPIStack extends cdk.Stack {
       Description: 'Harness API - https://github.com/connected-web/openapi-rest-api',
       SubDomain: 'harness-api',
       HostedZoneDomain: config.hostedZoneDomain,
+      HostedZoneId: config.hostedZoneId,
       Verifiers: config?.identity?.Verifiers ?? [],
       HeaderAuthorizer: config?.identity?.HeaderAuthorizer,
       AuthorizerARN: config?.authorizerARN,

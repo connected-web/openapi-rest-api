@@ -37,6 +37,7 @@ describe('OpenAPI report summary output', () => {
       Description: 'Summary report test API',
       SubDomain: 'test-api',
       HostedZoneDomain: 'example.com',
+      HostedZoneId: 'Z0STUB000000000000001',
       Verifiers: []
     }, {})
 
@@ -74,6 +75,7 @@ describe('OpenAPI report summary output', () => {
       Description: 'Summary report test API',
       SubDomain: 'test-api',
       HostedZoneDomain: 'example.com',
+      HostedZoneId: 'Z0STUB000000000000001',
       Verifiers: []
     }, {})
 

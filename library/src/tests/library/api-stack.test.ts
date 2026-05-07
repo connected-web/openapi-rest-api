@@ -18,6 +18,7 @@ function getTemplate (): Template {
   },
   {
     hostedZoneDomain: 'dummy.domain.name',
+    hostedZoneId: 'Z0STUB000000000000001',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
       Verifiers: []
@@ -41,6 +42,7 @@ function getTemplateWithCustomHeaderAuthorizerProps (): Template {
   },
   {
     hostedZoneDomain: 'dummy.domain.name',
+    hostedZoneId: 'Z0STUB000000000000001',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
       Verifiers: [],
@@ -75,6 +77,7 @@ function getTemplateWithCustomLambdaProps (): Template {
   },
   {
     hostedZoneDomain: 'dummy.domain.name',
+    hostedZoneId: 'Z0STUB000000000000001',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
       Verifiers: []
@@ -108,6 +111,7 @@ function getTemplateWithExistingAuthorizerArn (): Template {
   },
   {
     hostedZoneDomain: 'dummy.domain.name',
+    hostedZoneId: 'Z0STUB000000000000001',
     serviceDataBucketName: 'test-stack-stub-bucket-name',
     identity: {
       Verifiers: []

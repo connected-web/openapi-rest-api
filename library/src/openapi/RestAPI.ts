@@ -53,8 +53,14 @@ export interface OpenAPIRestAPIProps {
    */
   HostedZoneDomain: string
   /**
-   * If provided, the hosted zone will be resolved by ID rather than by domain name lookup.
-   * Use this when deploying cross-account where a Route53 lookup would target the wrong account.
+   * The ID of the Route53 hosted zone where the CNAME record and ACM certificate DNS validation
+   * record will be created. When provided, the zone is resolved by ID at deploy time using
+   * `HostedZone.fromHostedZoneAttributes` — no synth-time Route53 lookup is performed, and the
+   * zone ID is not baked into the CloudFormation template.
+   *
+   * **Strongly recommended for all deployments.** Without this, `HostedZone.fromLookup` runs at
+   * CDK synth time and bakes the source account's zone ID into the template. Packages built this
+   * way cannot be redeployed cross-account because the baked zone ID belongs to a different account.
    */
   HostedZoneId?: string
   /**
@@ -125,6 +131,7 @@ export interface Verifier {
  *    Description: 'Example API - created via AWS CDK',
  *    SubDomain: 'my-api',
  *    HostedZoneDomain: 'example.com',
+ *    HostedZoneId: 'Z1234567890ABC',
  *    Verifiers: [{
  *      name: 'ExampleCognitoUserPool',
  *      userPoolId: 'us-east-1_123456789',

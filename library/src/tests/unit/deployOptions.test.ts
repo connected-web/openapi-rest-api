@@ -18,6 +18,7 @@ describe('DeployOptions passthrough', () => {
       Description: 'Deploy options test API',
       SubDomain: 'test-api',
       HostedZoneDomain: 'example.com',
+      HostedZoneId: 'Z0STUB000000000000001',
       Verifiers: [],
       DeployOptions: {
         variables: {
@@ -47,6 +48,7 @@ describe('DeployOptions passthrough', () => {
       Description: 'Deploy options stage name precedence test API',
       SubDomain: 'test-api',
       HostedZoneDomain: 'example.com',
+      HostedZoneId: 'Z0STUB000000000000001',
       Verifiers: [],
       StageName: 'explicit-stage',
       DeployOptions: {

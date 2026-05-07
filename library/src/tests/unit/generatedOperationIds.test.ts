@@ -29,6 +29,7 @@ describe('Generated Operation IDs', () => {
       Description: 'Stub API for testing Rest Signatures',
       SubDomain: 'rest-signatures',
       HostedZoneDomain: 'stub.test',
+      HostedZoneId: 'Z0STUB000000000000001',
       Verifiers: []
     }, sharedResources)
   })
